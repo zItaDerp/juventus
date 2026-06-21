@@ -1,0 +1,739 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800&display=swap');
+
+/* Reset Globale per evitare il bianco */
+* { box-sizing: border-box; }
+:root {
+    --bg-profondo: #030303;
+    --bianco-ottico: #ffffff;
+    --grigio-ui: #1a1a1a;
+    --accento-juve: #e0c870; /* Oro pallido moderno */
+    --verde-prato: #0a170f; 
+}
+
+body {
+    background-color: var(--bg-profondo);
+    background-image: radial-gradient(circle at 50% 0%, #151515 0%, transparent 70%);
+    color: var(--bianco-ottico);
+    font-family: 'Montserrat', sans-serif; /* Font per i testi */
+    margin: 0;
+}
+
+h1, h2, h3, .num, .rating-numero, .nome-modulo {
+    font-family: 'Bebas Neue', sans-serif; /* Font stile Juve per i titoli */
+    letter-spacing: 1px;
+}
+
+/* Mantieni qui sotto tutto il resto del tuo CSS originale (menu, layout, campo, overlay) */
+
+.screen-container { width: 100vw; height: 100vh; padding: 20px 40px; }
+
+/* 1. MENU PRINCIPALE */
+.menu-layout { display: flex; height: 100%; align-items: center; }
+.menu-left { flex: 1; padding-left: 50px; }
+.menu-left .subtitle { color: var(--oro); font-weight: bold; font-size: 0.9rem; letter-spacing: 2px; }
+.menu-left h1 { font-family: 'Teko', sans-serif; font-size: 8rem; margin: -20px 0; line-height: 0.8; }
+.menu-left h1 span { color: var(--oro); font-size: 5rem; }
+.menu-left .desc { color: #888; margin-top: 30px; font-size: 1.1rem; line-height: 1.5; }
+
+.menu-right { flex: 1; display: flex; flex-direction: column; gap: 10px; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 40px; }
+.menu-item { display: flex; align-items: center; padding: 20px; cursor: pointer; transition: 0.3s; position: relative; border: 1px solid transparent; }
+.menu-item:hover:not(.disabled) { border: 1px solid var(--oro); background: rgba(212, 175, 55, 0.05); }
+.menu-item .num { font-family: 'Teko', sans-serif; font-size: 1.5rem; color: #555; width: 40px; }
+.menu-item h3 { margin: 0 0 5px 0; font-size: 1.2rem; }
+.menu-item p { margin: 0; color: #666; font-size: 0.8rem; }
+.menu-item .arrow { position: absolute; right: 20px; color: var(--oro); font-size: 0.8rem; opacity: 0; transition: 0.3s; }
+.menu-item:hover:not(.disabled) .arrow { opacity: 1; right: 10px; }
+.menu-item.disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* 2. MODULI */
+.titolo-centrato { text-align: center; margin-bottom: 50px; }
+.titolo-centrato h2 { font-family: 'Teko', sans-serif; font-size: 3rem; color: var(--oro); margin: 0; }
+.grid-moduli { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+.card-modulo { background: var(--sfondo-card); border: 1px solid #333; border-radius: 8px; width: 200px; cursor: pointer; transition: 0.3s; text-align: center; overflow: hidden; }
+.card-modulo:hover { border-color: var(--oro); transform: translateY(-5px); }
+.mini-campo { height: 220px; background: repeating-linear-gradient(0deg, var(--verde-campo), var(--verde-campo) 20px, #143020 20px, #143020 40px); display: flex; flex-direction: column; justify-content: space-evenly; }
+.riga-campo { display: flex; justify-content: center; gap: 15px; }
+.dot { width: 10px; height: 10px; background: #ffcc00; border-radius: 50%; box-shadow: 0 0 5px #000; }
+.nome-modulo { padding: 15px; font-weight: bold; font-size: 1.2rem; }
+
+/* 3. DRAFT E GIOCO (Layout a 3 colonne esatto) */
+.top-bar-gioco { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+.btn-back { background: transparent; border: 1px solid var(--oro); color: var(--oro); padding: 5px 15px; cursor: pointer; border-radius: 4px; }
+.logo-title-small { font-weight: bold; }
+.logo-title-small span { color: #666; font-size: 0.8rem; margin-left: 10px; }
+.badge { background: #333; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; }
+.badge-outline { border: 1px solid #555; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; }
+
+.layout-dashboard { display: flex; gap: 20px; height: calc(100vh - 120px); }
+.pannello-sinistro { width: 250px; display: flex; flex-direction: column; gap: 15px; }
+.pannello-centrale { flex: 1; }
+.pannello-destro { width: 450px; }
+
+.info-box { background: var(--sfondo-card); border: 1px solid #333; border-radius: 8px; padding: 20px; }
+.gold-text { color: var(--oro); margin: 0 0 5px 0; }
+.info-row { display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.9rem; border-top: 1px solid #222; padding-top: 10px; }
+
+/* Campo da calcio standard con linee grafiche */
+.campo-calcio { 
+    height: 100%; 
+    background-color: var(--verde-prato); 
+    background-image:
+        radial-gradient(circle at 50% 50%, transparent 12%, rgba(224, 200, 112, 0.15) 12%, rgba(224, 200, 112, 0.15) 13%, transparent 13%),
+        linear-gradient(to bottom, transparent 49.6%, rgba(224, 200, 112, 0.15) 49.6%, rgba(224, 200, 112, 0.15) 50.4%, transparent 50.4%),
+        repeating-linear-gradient(to bottom, transparent, transparent 10%, rgba(255, 255, 255, 0.02) 10%, rgba(255, 255, 255, 0.02) 20%);
+    border: 2px solid rgba(224, 200, 112, 0.2); 
+    border-radius: 12px; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-around; 
+    padding: 20px; 
+    position: relative; 
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.7);
+}
+
+.reparto { display: flex; justify-content: space-around; align-items: center; width: 100%; }
+
+/* Slot di Selezione Ruoli in stile card premium */
+.slot { 
+    width: 75px; 
+    height: 55px; 
+    background: linear-gradient(145deg, #121212 0%, #050505 100%);
+    border: 1px dashed var(--accento-juve); 
+    border-radius: 8px; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.slot.active-slot { 
+    border: 2px solid var(--accento-juve); 
+    background: rgba(224, 200, 112, 0.25); 
+    box-shadow: 0 0 15px rgba(224, 200, 112, 0.4); 
+}
+
+.ruolo-label { color: #888; font-size: 0.75rem; font-weight: bold; letter-spacing: 0.5px; transition: color 0.3s; }
+
+/* Area Draft (Carte orizzontali) */
+.draft-panel { background: rgba(0,0,0,0.5); border: 1px solid #333; border-radius: 12px; padding: 20px; height: 100%; display: flex; flex-direction: column; }
+#testo-istruzioni { color: #aaa; font-size: 0.9rem; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
+.lista-carte-draft { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; justify-content: center; }
+
+.carta { background: var(--sfondo-card); border: 1px solid #444; border-radius: 8px; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; position: relative; }
+.carta:hover { border-color: var(--oro); transform: scale(1.02); }
+.carta-info h3 { margin: 0 0 5px 0; font-size: 1.1rem; }
+.carta-info p { margin: 0; color: #888; font-size: 0.8rem; }
+.rating-numero { font-family: 'Teko', sans-serif; font-size: 2rem; color: var(--oro); }
+
+.azioni-draft { display: flex; gap: 10px; margin-top: 20px; }
+.btn-reroll { flex: 1; background: transparent; border: 1px solid var(--oro); color: var(--oro); padding: 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.btn-stagione { flex: 2; background: #333; border: none; color: #666; padding: 15px; border-radius: 6px; font-weight: bold; transition: 0.3s; }
+.btn-stagione:not([disabled]) { background: var(--oro); color: #000; cursor: pointer; }
+
+/* Header minimalista */
+.header-minimal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.dot-live {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: #ff3366;
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 0 10px #ff3366;
+}
+
+/* Campo da calcio enorme e scuro */
+.campo-focus {
+    height: calc(100vh - 350px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Campo Premium con linee oro e sfumature d'erba ad alta definizione */
+.campo-calcio-premium {
+    width: 100%;
+    max-width: 800px;
+    height: 100%;
+    background-color: var(--verde-prato);
+    background-image:
+        radial-gradient(circle at 50% 50%, transparent 12%, rgba(224, 200, 112, 0.25) 12%, rgba(224, 200, 112, 0.25) 13%, transparent 13%),
+        linear-gradient(to bottom, transparent 49.7%, rgba(224, 200, 112, 0.25) 49.7%, rgba(224, 200, 112, 0.25) 50.3%, transparent 50.3%),
+        repeating-linear-gradient(to bottom, transparent, transparent 10%, rgba(255, 255, 255, 0.03) 10%, rgba(255, 255, 255, 0.03) 20%);
+    border: 1px solid rgba(224, 200, 112, 0.3);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    position: relative;
+    box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+}
+
+/* Pannello Draft in stile "Bottom Sheet" */
+.draft-overlay-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 320px;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(15px); /* Effetto vetro sfocato */
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 20px 40px;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+}
+
+.draft-header-overlay {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.highlight {
+    color: var(--accento-juve);
+}
+
+.lista-carte-flex {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex: 1;
+}
+
+/* Nuove Carte Orizzontali / Quadrate */
+.carta {
+    width: 250px;
+    background: linear-gradient(180deg, #1f1f1f, #111);
+    border: 1px solid #333;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s;
+    /* Animazione di ingresso */
+    animation: slideUpFade 0.5s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.carta:hover {
+    transform: translateY(-10px) scale(1.05);
+    border-color: var(--accento-juve);
+    background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+}
+
+/* Stagger per far apparire le carte una dopo l'altra */
+.carta:nth-child(1) { animation-delay: 0.1s; }
+.carta:nth-child(2) { animation-delay: 0.2s; }
+.carta:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes slideUpFade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Effetti di interazione avanzati con i ruoli manuali */
+.slot {
+    cursor: pointer;
+}
+
+.slot:hover:not(.occupato) {
+    border-color: var(--accento-juve);
+    background: var(--accento-juve);
+    color: var(--bg-profondo);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 15px rgba(224, 200, 112, 0.3);
+}
+
+.slot:hover:not(.occupato) .ruolo-label {
+    color: var(--bg-profondo);
+}
+
+.slot.active-slot {
+    border: 2px solid var(--accento-juve);
+    background: rgba(224, 200, 112, 0.25);
+    box-shadow: 0 0 20px rgba(224, 200, 112, 0.4);
+    transform: scale(1.1);
+}
+
+.slot.occupato {
+    pointer-events: none; /* Impedisce di cliccarci di nuovo */
+}
+
+.layout-gioco {
+    display: grid;
+    grid-template-columns: 250px 1fr 350px;
+    height: 100vh;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Recap a sinistra */
+.pannello-recap { 
+    background: #0a0a0a; 
+    padding: 20px; 
+    border-right: 1px solid #222; 
+}
+.box-recap { margin: 20px 0; border: 1px solid #333; padding: 15px; }
+
+/* Bottone Menu Principale */
+.btn-menu-principale {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid #555;
+    color: #fff;
+    cursor: pointer;
+    font-family: 'Bebas Neue';
+    letter-spacing: 2px;
+    transition: 0.3s;
+}
+.btn-menu-principale:hover {
+    background: #fff;
+    color: #000;
+}
+
+/* Draft a destra */
+.pannello-destro {
+    background: #050505;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.lista-carte-draft {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Layout Generale Schermata Gioco */
+.headbar-draft {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, #0d0d0d 0%, #050505 100%);
+    border-bottom: 1px solid rgba(224, 200, 112, 0.2);
+    padding: 15px 40px;
+    height: 75px;
+}
+
+.headbar-left { display: flex; align-items: center; gap: 20px; }
+.divider-vertical { width: 1px; height: 30px; background: rgba(255,255,255,0.1); }
+.badge-modalita { background: var(--accento-juve); color: #000; font-weight: bold; font-size: 0.8rem; padding: 4px 10px; border-radius: 4px; letter-spacing: 1px; }
+.titolo-sessione h2 { margin: 0; font-family: 'Teko', sans-serif; font-size: 1.8rem; line-height: 1; }
+.titolo-sessione p { margin: 0; font-size: 0.7rem; color: #888; display: flex; align-items: center; }
+.pulsante-live { display: inline-block; width: 6px; height: 6px; background: #ff3366; border-radius: 50%; margin-right: 6px; box-shadow: 0 0 8px #ff3366; }
+
+.contatore-premium { text-align: right; }
+.label-premium { font-size: 0.65rem; color: #666; display: block; letter-spacing: 1px; }
+.valore-premium { font-family: 'Teko', sans-serif; font-size: 1.8rem; color: var(--accento-juve); line-height: 1; }
+
+/* Dashboard Orizzontale a 3 Colonne */
+.layout-dashboard-orizzontale {
+    display: grid;
+    grid-template-columns: 280px 1fr 380px;
+    height: calc(100vh - 75px);
+    gap: 20px;
+    padding: 20px;
+    background: #020202;
+}
+
+/* Colonna Recap Sinistra */
+.colonna-recap { display: flex; flex-direction: column; justify-content: space-between; }
+.recap-card { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px; overflow: hidden; }
+.recap-header { background: #111; padding: 12px 15px; font-size: 0.8rem; font-weight: bold; color: #888; letter-spacing: 1px; border-bottom: 1px solid #1a1a1a; }
+.recap-body { padding: 15px; display: flex; flex-direction: column; gap: 15px; }
+.recap-item { display: flex; flex-direction: column; gap: 4px; }
+.recap-item .label { font-size: 0.7rem; color: #555; font-weight: 600; }
+.recap-item .value { font-size: 1rem; font-weight: bold; }
+.text-gold { color: var(--accento-juve); }
+
+/* Restyle Premium Bottone Menu Principale */
+.btn-menu-principale-premium {
+    background: transparent;
+    border: 1px solid #222;
+    color: #999;
+    padding: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.85rem;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    letter-spacing: 1px;
+}
+.btn-menu-principale-premium:hover {
+    border-color: #fff;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.05);
+}
+
+/* Campo Centrale */
+.colonna-campo { display: flex; justify-content: center; align-items: center; }
+
+/* Colonna Scelta Giocatori Destra */
+.colonna-draft { background: #060606; border: 1px solid #111; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+.draft-sidebar-header h3 { margin: 0; font-family: 'Teko', sans-serif; font-size: 1.8rem; }
+.draft-sidebar-header p { margin: 2px 0 0 0; font-size: 0.8rem; color: #555; }
+.lista-carte-verticale { display: flex; flex-direction: column; gap: 12px; flex-grow: 1; overflow-y: auto; justify-content: center; }
+
+/* Animazioni e Stile delle Carte Custom sul Pannello Destro */
+.lista-carte-verticale .carta {
+    width: 100%;
+    background: linear-gradient(135deg, #121212 0%, #080808 100%);
+    border: 1px solid #1c1c1c;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transform: translateX(50px);
+    opacity: 0;
+    animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+}
+
+.lista-carte-verticale .carta:hover {
+    border-color: var(--accento-juve);
+    background: linear-gradient(135deg, #1a1a1a 0%, #111111 100%);
+    transform: scale(1.02) translateY(-2px);
+    box-shadow: 0 6px 20px rgba(224, 200, 112, 0.1);
+}
+
+/* Delay d'ingresso sequenziale delle 3 carte */
+.lista-carte-verticale .carta:nth-child(1) { animation-delay: 0.05s; }
+.lista-carte-verticale .carta:nth-child(2) { animation-delay: 0.15s; }
+.lista-carte-verticale .carta:nth-child(3) { animation-delay: 0.25s; }
+
+@keyframes slideInRight {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.azioni-footer-draft { display: flex; gap: 10px; }
+.btn-azione-draft { padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem; border: none; transition: 0.2s; }
+.btn-usa-reroll { background: transparent; border: 1px solid var(--accento-juve); color: var(--accento-juve); width: 35%; }
+.btn-usa-reroll:hover { background: rgba(224, 200, 112, 0.05); }
+/* Dopo (Corretto) */
+.btn-completa-stagione { background: #1a1a1a; color: #444; width: 65%; cursor: not-allowed; }
+.btn-completa-stagione.attivo { background: #fff; color: #000; cursor: pointer; }
+
+/* ==========================================
+   RESTYLING HOMEPAGE JUVENTUS (AGGIORNATO)
+========================================== */
+.juve-header {
+    background-color: #000;
+    /* Un pattern a strisce verticali tono su tono molto sottile */
+    background-image: repeating-linear-gradient(90deg, #000 0, #000 20px, #0a0a0a 20px, #0a0a0a 40px);
+    color: #fff;
+    padding: 15px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    border-bottom: 2px solid var(--accento-juve);
+}
+
+.juve-logo-svg {
+    filter: drop-shadow(0 0 8px rgba(224, 200, 112, 0.4));
+    transition: transform 0.3s;
+}
+
+.juve-logo-svg:hover {
+    transform: scale(1.1);
+}
+
+.testo-header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.logo-testo {
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    line-height: 1;
+}
+
+.logo-testo span {
+    color: var(--accento-juve);
+    font-weight: 300;
+}
+
+.vecchia-signora-tag {
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-top: 5px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Modifiche alla Hero per includere le strisce Bianconere */
+.juve-hero {
+    position: relative;
+    background-color: #111;
+    color: #fff;
+    padding: 80px 20px;
+    text-align: center;
+    border-bottom: 4px solid #fff;
+    overflow: hidden; /* Importante per contenere l'overlay */
+}
+
+/* Overlay che genera il tipico sfondo a strisce bianche e nere, 
+   sfumato per non dare fastidio al testo e renderlo "Premium" */
+.hero-overlay-strisce {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+        90deg,
+        #ffffff 0%,
+        #ffffff 5%,
+        #000000 5%,
+        #000000 10%
+    );
+    opacity: 0.05; /* Molto basso per fare solo da texture */
+    z-index: 1;
+}
+
+.hero-contenuto {
+    position: relative;
+    z-index: 2; /* Porta il testo sopra le strisce */
+}
+
+.hero-contenuto h1 {
+    font-size: 4.5rem;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    text-shadow: 0 5px 15px rgba(0,0,0,0.8);
+}
+
+.hero-contenuto h1 span {
+    color: var(--accento-juve);
+}
+
+.hero-contenuto p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    line-height: 1.6;
+    color: #ddd;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+}
+
+.btn-gioca-oro {
+    background-color: #bba360;
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(187, 163, 96, 0.4);
+}
+
+.btn-gioca-oro:hover {
+    background-color: #d4c185;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(187, 163, 96, 0.6);
+}
+
+.juve-regole {
+    background-color: #fff;
+    color: #000;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.juve-regole h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    font-weight: 900;
+}
+
+.griglia-regole {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.carta-regola {
+    background-color: #f9f9f9;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    padding: 30px;
+    width: 200px;
+    transition: transform 0.3s;
+}
+
+.carta-regola:hover {
+    transform: translateY(-10px);
+    border-color: #bba360;
+}
+
+.icona-regola {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.carta-regola h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.carta-regola p {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.4;
+}
+
+.juve-footer {
+    background-color: #000;
+    color: #666;
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 0.85rem;
+    border-top: 1px solid #333;
+}
+
+.juve-footer p {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+.juve-footer strong {
+    color: #bba360;
+}
+
+/* --- SCHERMATA MODALITÀ (RESTYLING PREMIUM) --- */
+.modalita-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    width: 90%;
+    max-width: 650px;
+    margin: 40px auto;
+}
+
+/* Design della Card */
+.card-modalita {
+    background: linear-gradient(145deg, #151515 0%, #080808 100%);
+    border: 2px solid #222;
+    padding: 30px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Effetto Hover sulla Card */
+.card-modalita:hover {
+    border-color: var(--accento-juve); /* Oro Juventus */
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(224, 200, 112, 0.15);
+    background: linear-gradient(145deg, #1c1c1c 0%, #0a0a0a 100%);
+}
+
+.modalita-info {
+    width: 65%;
+    text-align: left;
+}
+
+.modalita-info h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--bianco-ottico);
+    margin: 0 0 10px 0;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.modalita-info p {
+    font-size: 0.9rem;
+    color: #999;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Design del Pulsante Seleziona */
+.btn-scegli-mode {
+    background: transparent;
+    color: var(--accento-juve);
+    border: 2px solid var(--accento-juve);
+    padding: 12px 24px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+/* Effetto Hover sincronizzato (quando passi sulla card, si accende il bottone) */
+.card-modalita:hover .btn-scegli-mode {
+    background: var(--accento-juve);
+    color: var(--bg-profondo);
+    box-shadow: 0 0 20px rgba(224, 200, 112, 0.4);
+    transform: scale(1.05);
+}
+
+/* Classe per nascondere dinamicamente le schermate */
+.nascosto {
+    display: none !important;
+}
+
+/* Animazione di entrata fluida */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}

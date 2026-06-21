@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juve 38·0 - Il Manageriale Bianconero</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="schermata-iniziale" class="schermo attivo">
+        <!-- Header -->
+        <header class="juve-header">
+            <!-- Logo SVG stilizzato della Juventus (Forma a J / Scudetto) -->
+            <svg class="juve-logo-svg" viewBox="0 0 100 100" width="45" height="45">
+                <!-- Striscia Oro -->
+                <path d="M 35 15 L 65 15 L 65 65 C 65 80 50 90 35 80 L 35 68 C 48 75 53 68 53 60 L 53 28 L 35 28 Z" fill="var(--accento-juve)"/>
+                <!-- Striscia Bianca -->
+                <path d="M 15 15 L 28 15 L 28 65 C 28 75 32 80 38 80 L 38 92 C 22 88 15 78 15 65 Z" fill="#ffffff"/>
+            </svg>
+            
+            <div class="testo-header-container">
+                <div class="logo-testo">J-DRAFT <span>MANAGER</span></div>
+                <div class="vecchia-signora-tag">Lo Spirito della Vecchia Signora</div>
+            </div>
+        </header>
+
+        <!-- 1. SCHERMATA INIZIALE (HERO) -->
+        <section id="screen-home" class="juve-hero">
+            <div class="hero-overlay-strisce"></div> <!-- Div per l'effetto zebrato -->
+            <div class="hero-contenuto">
+                <h1>CREA LA TUA JUVE <span>STORICA</span></h1>
+                <p>50 anni di leggende bianconere. Un solo mister. Scegli il tuo modulo, fai il draft perfetto e conquista la vetta della Serie A fino all'ultimo respiro.</p>
+                <button class="btn-gioca-oro" onclick="mostraSchermataModalita()">GIOCA ORA</button>
+            </div>
+        </section>
+
+        <!-- 2. SCHERMATA SELEZIONE MODALITÀ (Inizialmente spenta dalla classe "nascosto") -->
+        <section id="screen-modalita" class="nascosto">
+            <div class="logo-contenitore">
+                <h1 class="logo-testo">SELEZIONA MODALITÀ</h1>
+            </div>
+    
+            <div class="modalita-container">
+                <!-- Card Classica -->
+                <div class="card-modalita" onclick="impostaModalitaEAvvia('classica')">
+                    <div class="modalita-info">
+                        <h3>MODALITÀ CLASSICA</h3>
+                        <p>Campionato tradizionale a 38 giornate. Gestisci la squadra, affronta il mercato di riparazione e punta alla vetta della classifica.</p>
+                    </div>
+                    <button class="btn-scegli-mode">SELEZIONA</button>
+                </div>
+
+                <!-- Card Champions League -->
+                <div class="card-modalita" onclick="impostaModalitaEAvvia('champions')">
+                    <div class="modalita-info">
+                        <h3>CHAMPIONS LEAGUE</h3>
+                        <p>Nuovo formato a 36 squadre! Affronta 8 avversarie nel girone unico: le prime 8 volano agli ottavi, dalla 9ª alla 24ª si giocano i playoff. Dentro o fuori!</p>
+                    </div>
+                    <button class="btn-scegli-mode">SELEZIONA</button>
+                </div>
+
+                <div class="card-modalita" onclick="impostaModalitaEAvvia('risalita')">
+                    <div class="modalita-info">
+                        <h3>LA RISALITA</h3>
+                        <p>Stagione 2006/07. Riparti dall'inferno della Serie B con 9 punti di penalizzazione. Schiera i fedelissimi, domina un campionato insidioso e riporta la Vecchia Signora in vetta!</p>
+                    </div>
+                    <button class="btn-scegli-mode">SELEZIONA</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Regole del Gioco -->
+        <section class="juve-regole">
+            <h2>COME SI GIOCA?</h2>
+            <div class="griglia-regole">
+                <div class="carta-regola">
+                    <div class="icona-regola">📋</div>
+                    <h3>1. Scegli il Modulo</h3>
+                    <p>Seleziona lo schema tattico migliore per la tua idea di calcio. Vuoi un 4-3-3 offensivo o un solido 3-5-2?</p>
+                </div>
+                <div class="carta-regola">
+                    <div class="icona-regola">🃏</div>
+                    <h3>2. Fai il Draft</h3>
+                    <p>Pesca i giocatori storici della Juventus dal 1976 ad oggi. Assicurati i campioni e attento a schivare i clamorosi flop storici!</p>
+                </div>
+                <div class="carta-regola">
+                    <div class="icona-regola">👔</div>
+                    <h3>3. L'Allenatore</h3>
+                    <p>Trapattoni, Lippi, Conte o Allegri? Scegli la guida tecnica che darà l'impronta tattica (e i bonus) alla tua rosa.</p>
+                </div>
+                <div class="carta-regola">
+                    <div class="icona-regola">⚽</div>
+                    <h3>4. Simula la Stagione</h3>
+                    <p>Scendi in campo. Il motore di gioco calcolerà la forza della tua squadra e la testerà contro le storiche rivali in un'intera stagione.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer con Disclaimer -->
+        <footer class="juve-footer">
+            <p><strong>DISCLAIMER:</strong> Questo progetto è un fan-game amatoriale gratuito e non è in alcun modo affiliato, associato, autorizzato, approvato o sponsorizzato da Juventus Football Club S.p.A. Tutti i nomi, i loghi e i marchi registrati appartengono ai rispettivi proprietari. Creato solo per puro divertimento dai tifosi per i tifosi.</p>
+        </footer>
+    </div>
+
+    <div id="schermata-modulo" class="screen-container" style="display: none;">
+        <header class="top-bar">
+            <div class="titolo-centrato">
+                <h2>SCEGLI IL MODULO</h2>
+                <p>Allegriano o mettiamo questa difesa a 4?</p>
+            </div>
+        </header>
+        
+       <div class="grid-moduli">
+            <div class="card-modulo" onclick="impostaModulo('4-3-3')">
+                <div class="mini-campo">
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div></div>
+                </div>
+                <div class="nome-modulo">4-3-3</div>
+            </div>
+
+            <div class="card-modulo" onclick="impostaModulo('4-4-2')">
+                <div class="mini-campo">
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div></div>
+                </div>
+                <div class="nome-modulo">4-4-2</div>
+            </div>
+
+            <div class="card-modulo" onclick="impostaModulo('3-5-2')">
+                <div class="mini-campo">
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div></div>
+                </div>
+                <div class="nome-modulo">3-5-2</div>
+            </div>
+
+            <div class="card-modulo" onclick="impostaModulo('4-2-3-1')">
+                <div class="mini-campo">
+                    <div class="riga-campo"><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div></div>
+                </div>
+                <div class="nome-modulo">4-2-3-1</div>
+            </div>
+
+            <div class="card-modulo" onclick="impostaModulo('3-4-2-1')">
+                <div class="mini-campo">
+                    <div class="riga-campo"><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div></div>
+                </div>
+                <div class="nome-modulo">3-4-2-1</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="schermata-gioco" class="screen-container" style="display: none; padding: 0;">
+        <header class="headbar-draft">
+            <div class="headbar-left">
+                <span class="badge-modalita" id="badge-modalita-live">CLASSICA</span>
+                <div class="divider-vertical"></div>
+                <div class="titolo-sessione">
+                    <h2>JUVE 38·0</h2>
+                    <p><span class="pulsante-live"></span> STAGIONE IN CORSO</p>
+                </div>
+            </div>
+            
+            <div class="headbar-right">
+                <div class="contatore-premium">
+                    <span class="label-premium">REROLL RIMASTI</span>
+                    <span class="valore-premium" id="headbar-reroll-count">3</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="layout-dashboard-orizzontale">
+            
+            <aside class="colonna-recap animate-left">
+                <div class="recap-card">
+                    <div class="recap-header">RECAP MANAGER</div>
+                    <div class="recap-body">
+                        <div class="recap-item">
+                            <span class="label">MODALITÀ</span>
+                            <span class="value text-gold" id="recap-modalita">-</span>
+                        </div>
+                        <div class="recap-item">
+                            <span class="label">MODULO SCELTO</span>
+                            <span class="value" id="recap-modulo">-</span>
+                        </div>
+                        <div class="recap-item">
+                            <span class="label">ALLENATORE</span>
+                            <span class="value text-light" id="recap-allenatore">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn-menu-principale-premium" onclick="location.reload()">
+                    <span class="icon-back">←</span> MENU PRINCIPALE
+                </button>
+            </aside>
+
+            <main class="colonna-campo">
+                <div class="campo-calcio-premium" id="campo-dinamico">
+                    </div>
+            </main>
+
+            <aside class="colonna-draft">
+                <div class="draft-sidebar-header">
+                    <h3>RUOLO: <span id="testo-ruolo" class="text-gold">PORTIERE</span></h3>
+                    <p>Scegli un fuoriclasse per la tua Juve!</p>
+                </div>
+                
+                <div id="area-draft" class="lista-carte-verticale">
+                    </div>
+
+                <div class="azioni-footer-draft">
+                    <button class="btn-azione-draft btn-usa-reroll">USA REROLL</button>
+                    <button class="btn-azione-draft btn-completa-stagione" disabled>VIA ALLA STAGIONE (0/11)</button>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <div id="schermata-simulazione" class="screen-container" style="display: none;">
+        <header class="header-minimal">
+            <div class="status-run"><span class="dot-live"></span> STAGIONE IN CORSO</div>
+            <div id="info-mister-sim" class="text-gold" style="font-family: 'Bebas Neue'; font-size: 1.2rem;"></div>
+        </header>
+
+        <div class="simulazione-layout" style="display: grid; grid-template-columns: 1fr 350px; gap: 30px; margin-top: 20px; height: calc(100vh - 120px);">
+            <main class="pannello-principale-sim" style="background: rgba(10,10,10,0.9); border: 1px solid #222; border-radius: 12px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h2 id="giornata-corrente" style="font-size: 2.5rem; margin: 0; color: var(--accento-juve);">GIORNATA 1</h2>
+                    <p style="color: #666; margin: 5px 0 20px 0;">Campionato di Serie A</p>
+                
+                    <div id="ticker-match-live" style="background: #000; border-left: 4px solid var(--accento-juve); padding: 20px; border-radius: 6px; margin-bottom: 25px; min-height: 100px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 600;">
+                        Attesa fischio d'inizio...
+                    </div>
+                </div>
+
+                <div id="cronologia-partite" style="flex: 1; overflow-y: auto; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; border: 1px solid #1a1a1a; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px;"></div>
+
+                <div id="box-controlli-sim" style="display: flex; gap: 15px;"></div>
+            </main>
+
+            <aside class="sidebar-sim" style="background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px; display: flex; flex-direction: column;">
+                <h3 style="margin: 0 0 15px 0; font-size: 1.4rem; border-bottom: 1px solid #333; padding-bottom: 10px;">CLASSIFICA LIVE</h3>
+                <div id="classifica-live-container" style="flex: 1; overflow-y: auto; font-size: 0.85rem;">
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <div id="schermata-recap" class="screen-container" style="display: none; overflow-y: auto;">
+        <center>
+            <h1 style="font-size: 3.5rem; color: var(--accento-juve); margin: 10px 0 0 0;">RESOCONTO STAGIONALE</h1>
+            <p id="commento-dirigenza" style="color: #aaa; max-width: 600px; margin-bottom: 30px; font-size: 0.95rem; line-height: 1.4;"></p>
+        </center>
+
+        <div class="dashboard-recap-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; max-width: 1200px; margin: 0 auto 5px auto;">
+            <div class="card-recap" style="background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px;">
+                <h2 style="color: var(--accento-juve); margin-top: 0; border-bottom: 2px solid #222; padding-bottom: 10px;">CLASSIFICA FINALE SERIE A</h2>
+                <table style="width: 100%; border-collapse: collapse; text-align: left;" id="tabella-classifica-finale">
+                    <thead>
+                        <tr style="color: #666; border-bottom: 1px solid #222; font-size: 0.8rem;">
+                            <th style="padding: 10px 5px;">POS</th>
+                            <th>SQUADRA</th>
+                            <th>PT</th>
+                            <th>V</th>
+                            <th>P</th>
+                            <th>S</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-size: 0.9rem;"></tbody>
+                </table>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 30px;">
+                <div class="card-recap" style="background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px;">
+                    <h2 style="color: var(--accento-juve); margin-top: 0; border-bottom: 2px solid #222; padding-bottom: 10px;">RENDIMENTO BIANCONERO</h2>
+                    <div id="stats-riepilogo-juve" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center; margin-top: 15px;"></div>
+                </div>
+
+                <div class="card-recap" style="background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px; flex: 1;">
+                    <h2 style="color: var(--accento-juve); margin-top: 0; border-bottom: 2px solid #222; padding-bottom: 10px;">CLASSIFICA MARCATORI</h2>
+                    <div id="lista-marcatori-finale" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <center style="margin: 40px 0;">
+            <button class="btn-menu-principale-premium" style="max-width: 300px; margin: 0 auto; padding: 18px 30px; font-size: 1.2rem; justify-content: center;" onclick="window.location.reload()">🔄 RICOMINCIA DRAFT</button>
+        </center>
+    </div>
+
+    <script src="giocatori.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
