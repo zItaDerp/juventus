@@ -67,6 +67,31 @@
                     </div>
                     <button class="btn-scegli-mode">SELEZIONA</button>
                 </div>
+
+                <div class="card-modalita" onclick="impostaModalitaEAvvia('mod-fairplay')">
+                    <div class="modalita-info">
+                        <h3>FAIR PLAY FINANZIARIO</h3>
+                        <p>Costruisci la squadra rispettando il tetto salariale di 930 punti. Attento a non finire i fondi, altrimenti Elkann si arrabbiera' di sicuro!</p>
+                    </div>
+                    <button class="btn-scegli-mode">SELEZIONA</button>
+                </div>
+
+                <div class="card-modalita" onclick="impostaModalitaEAvvia('quota-102')">
+                    <div class="modalita-info">
+                        <h3>QUOTA 102</h3>
+                        <p>Riuscirai a battere il record di 102 punti di Antonio Conte? Costruisci la miglior formazione possibile e tenta questa formidabile impresa!</p>
+                    </div>
+                    <button class="btn-scegli-mode">SELEZIONA</button>
+                </div>
+
+                <!-- Card Roguelike -->
+                <div class="card-modalita" onclick="impostaModalitaEAvvia('roguelike')">
+                    <div class="modalita-info">
+                        <h3>MODALITÀ ROGUELIKE</h3>
+                        <p>Il calcio è imprevedibile! Affronta infortuni, cali di forma, scandali o boost motivazionali generati casualmente turno dopo turno. Riuscirai a gestire l'imprevisto?</p>
+                    </div>
+                    <button class="btn-scegli-mode">SELEZIONA</button>
+                </div>
             </div>
         </section>
 
@@ -182,6 +207,11 @@
                     <span class="label-premium">REROLL RIMASTI</span>
                     <span class="valore-premium" id="headbar-reroll-count">3</span>
                 </div>
+            </div>
+
+            <!-- Mettilo accanto al contatore dei Reroll -->
+            <div id="box-budget-salariale" style="display: none; margin-right: 20px; font-size: 1.2rem;">
+                <span>💰 BUDGET: <strong id="headbar-budget-count" style="color: #ffcc00;">800</strong></span>
             </div>
         </header>
 
@@ -306,7 +336,16 @@
         </center>
     </div>
 
+    <div id="modal-custom-alert" class="modal-overlay nascosto">
+        <div class="modal-box">
+            <h2 id="modal-titolo">TITOLO</h2>
+            <p id="modal-messaggio">Messaggio di prova</p>
+            <button class="btn-scegli-mode" onclick="chiudiMessaggioCustom()">OK, CAPITO</button>
+        </div>
+    </div>
+
     <script src="giocatori.js"></script>
     <script src="script.js"></script>
 </body>
+</html>
 </html>

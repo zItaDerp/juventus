@@ -214,7 +214,102 @@ const databaseJuve = [
     { id: 216, nome: "C. Ronaldo", stagione: "20/21", ruolo: "ATT", rating: 89 },
     { id: 217, nome: "D. Vlahovic", stagione: "21/22", ruolo: "ATT", rating: 84 },
     { id: 218, nome: "D. Vlahovic", stagione: "23/24", ruolo: "ATT", rating: 82 },
-    { id: 219, nome: "A. Milik", stagione: "22/23", ruolo: "ATT", rating: 75 }
+    { id: 219, nome: "A. Milik", stagione: "22/23", ruolo: "ATT", rating: 75 },
+
+    // ==========================================
+    // I GREGARI E LE METEORE (Rating 74-78)
+    // ==========================================
+    
+    // Portieri
+    { id: 401, nome: "A. Manninger", stagione: "08/09", ruolo: "POR", rating: 76 },
+    { id: 402, nome: "Neto", stagione: "15/16", ruolo: "POR", rating: 78 },
+    { id: 403, nome: "F. Carini", stagione: "01/02", ruolo: "POR", rating: 74 },
+
+    // Difensori
+    { id: 404, nome: "J. Boumsong", stagione: "06/07", ruolo: "DC", rating: 76 },
+    { id: 405, nome: "D. Rugani", stagione: "17/18", ruolo: "DC", rating: 77 },
+    { id: 406, nome: "O. Mellberg", stagione: "08/09", ruolo: "DC", rating: 78 },
+    { id: 407, nome: "F. Peluso", stagione: "13/14", ruolo: "TS", rating: 75 },
+    { id: 408, nome: "A. Traoré", stagione: "10/11", ruolo: "TS", rating: 74 },
+    { id: 409, nome: "M. Motta", stagione: "10/11", ruolo: "TD", rating: 74 },
+    { id: 410, nome: "Z. Grygera", stagione: "07/08", ruolo: "TD", rating: 76 },
+
+    // Centrocampisti
+    { id: 411, nome: "S. Padoin", stagione: "14/15", ruolo: "CC", rating: 76 }, // Il Talismano!
+    { id: 412, nome: "S. Sturaro", stagione: "15/16", ruolo: "CDC", rating: 76 },
+    { id: 413, nome: "Tiago", stagione: "07/08", ruolo: "CC", rating: 77 },
+    { id: 414, nome: "S. Almiron", stagione: "07/08", ruolo: "CC", rating: 75 },
+    { id: 415, nome: "M. Pazienza", stagione: "11/12", ruolo: "CDC", rating: 74 },
+    { id: 416, nome: "M. Lemina", stagione: "16/17", ruolo: "CC", rating: 77 },
+    { id: 417, nome: "R. Pereyra", stagione: "14/15", ruolo: "COC", rating: 78 },
+
+    // Esterni
+    { id: 418, nome: "M. Estigarribia", stagione: "11/12", ruolo: "ES", rating: 76 },
+    { id: 419, nome: "E. Elia", stagione: "11/12", ruolo: "ED", rating: 75 },
+    { id: 420, nome: "J. Martinez", stagione: "10/11", ruolo: "ES", rating: 74 },
+    { id: 421, nome: "M. Isla", stagione: "12/13", ruolo: "ED", rating: 76 },
+
+    // Attaccanti
+    { id: 422, nome: "M. Zalayeta", stagione: "02/03", ruolo: "ATT", rating: 77 },
+    { id: 423, nome: "M. Borriello", stagione: "11/12", ruolo: "ATT", rating: 76 },
+    { id: 424, nome: "R. Bojinov", stagione: "06/07", ruolo: "ATT", rating: 76 },
+    { id: 425, nome: "N. Bendtner", stagione: "12/13", ruolo: "ATT", rating: 74 },
+    { id: 426, nome: "N. Anelka", stagione: "12/13", ruolo: "ATT", rating: 74 },
+
+    // ==========================================
+    // NUOVE ICONE & LEGGENDE
+    // ==========================================
+    { id: 500, nome: "Z. Boniek", stagione: "83/84", ruolo: "COC", rating: 88 }, // Bello di notte
+    { id: 501, nome: "Z. Boniek", stagione: "84/85", ruolo: "ES", rating: 86 },
+    { id: 502, nome: "M. Laudrup", stagione: "85/86", ruolo: "COC", rating: 87 },
+    { id: 503, nome: "M. Laudrup", stagione: "88/89", ruolo: "COC", rating: 84 },
+    { id: 504, nome: "C. Vieri", stagione: "96/97", ruolo: "ATT", rating: 87 },
+    { id: 505, nome: "A. Boksic", stagione: "96/97", ruolo: "ATT", rating: 85 },
+    { id: 506, nome: "P. Vierchowod", stagione: "95/96", ruolo: "DC", rating: 85 }, // Il muro della Champions
+    { id: 507, nome: "D. Baggio", stagione: "92/93", ruolo: "CDC", rating: 84 },
+    { id: 508, nome: "A. Möller", stagione: "92/93", ruolo: "COC", rating: 86 },
+
+    // ==========================================
+    // VERSIONI ALTERNATIVE DEI CAMPIONI (Role/OVR shift)
+    // ==========================================
+    { id: 510, nome: "A. Del Piero", stagione: "05/06", ruolo: "ATT", rating: 86 }, // L'anno della panchina con Capello
+    { id: 511, nome: "P. Dybala", stagione: "19/20", ruolo: "COC", rating: 88 }, // MVP della Serie A di Sarri
+    { id: 512, nome: "F. Chiesa", stagione: "21/22", ruolo: "AD", rating: 86 }, // Post-Europeo prime, prima dell'infortunio
+    { id: 513, nome: "K. Asamoah", stagione: "16/17", ruolo: "TS", rating: 78 }, // Riadattato a terzino basso
+    { id: 514, nome: "M. Caceres", stagione: "12/13", ruolo: "TD", rating: 80 },
+    { id: 515, nome: "M. Caceres", stagione: "15/16", ruolo: "DC", rating: 78 },
+    { id: 516, nome: "F. Gatti", stagione: "24/25", ruolo: "DC", rating: 82 }, // Upgrade con fascia da capitano
+    { id: 517, nome: "N. Legrottaglie", stagione: "03/04", ruolo: "DC", rating: 72 }, // La primissima annata da flop totale
+
+    // ==========================================
+    // GREGARI SOLIDI & OTTIMI RINUCALZI
+    // ==========================================
+    { id: 520, nome: "M. Rampulla", stagione: "96/97", ruolo: "POR", rating: 78 },
+    { id: 521, nome: "M. Perin", stagione: "23/24", ruolo: "POR", rating: 80 },
+    { id: 522, nome: "G. Marocchi", stagione: "89/90", ruolo: "CC", rating: 81 },
+    { id: 523, nome: "M. Carrera", stagione: "92/93", ruolo: "DC", rating: 81 },
+    { id: 524, nome: "S. Appiah", stagione: "03/04", ruolo: "CC", rating: 78 },
+    { id: 525, nome: "H. Salihamidzic", stagione: "07/08", ruolo: "ED", rating: 79 },
+    { id: 526, nome: "E. Giaccherini", stagione: "11/12", ruolo: "ES", rating: 78 },
+    { id: 527, nome: "S. Giovinco", stagione: "12/13", ruolo: "ATT", rating: 81 },
+    { id: 528, nome: "M. Di Vaio", stagione: "02/03", ruolo: "ATT", rating: 82 },
+    { id: 529, nome: "L. Spinazzola", stagione: "18/19", ruolo: "TS", rating: 79 },
+    { id: 530, nome: "M. Demiral", stagione: "20/21", ruolo: "DC", rating: 79 },
+    { id: 531, nome: "Douglas Luiz", stagione: "24/25", ruolo: "CC", rating: 81 },
+    { id: 532, nome: "K. Thuram", stagione: "24/25", ruolo: "CDC", rating: 80 },
+
+    // ==========================================
+    // FLOP STORICI & METEORE (Trappole per il Draft)
+    // ==========================================
+    { id: 540, nome: "I. Rush", stagione: "87/88", ruolo: "ATT", rating: 76 }, // Re dei bomber al Liverpool, delusione a Torino
+    { id: 541, nome: "M. Salas", stagione: "01/02", ruolo: "ATT", rating: 77 }, // Falcidiato dagli infortuni
+    { id: 542, nome: "E. Belardi", stagione: "07/08", ruolo: "POR", rating: 71 }, // Portiere di riserva post-Serie B
+    { id: 543, nome: "F. Miccoli", stagione: "03/04", ruolo: "AD", rating: 80 }, // Tanta classe ma poca continuità in bianconero
+    { id: 544, nome: "K. Coman", stagione: "14/15", ruolo: "AS", rating: 74 }, // Troppo giovane, non ha inciso
+    { id: 545, nome: "D. Kulusevski", stagione: "20/21", ruolo: "AD", rating: 78 }, // Promessa non mantenuta
+    { id: 546, nome: "S. Zaza", stagione: "15/16", ruolo: "ATT", rating: 79 }, // Il gol al Napoli e poco altro
+    { id: 547, nome: "M. Kean", stagione: "18/19", ruolo: "ATT", rating: 78 }, // Prima ascesa
+    { id: 548, nome: "M. Kean", stagione: "23/24", ruolo: "ATT", rating: 73 }  // Zero gol in campionato
 ];
 
 const databaseAllenatori = [
@@ -239,3 +334,4 @@ const databaseAllenatori = [
     { id: 319, nome: "Igor Tudor", effetto: "Catastrofe: -2 gioco di squadra, non ha fatto il suo", modificatore: -2 },
     { id: 320, nome: "Luciano Spalletti", effetto: "Il giusto: ha fatto il suo con una squadra mediocre, nessun bonus o malus", modificatore: 0 }
 ];
+

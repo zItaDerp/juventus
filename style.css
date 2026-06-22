@@ -396,11 +396,22 @@ h1, h2, h3, .num, .rating-numero, .nome-modulo {
 .colonna-draft { background: #060606; border: 1px solid #111; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
 .draft-sidebar-header h3 { margin: 0; font-family: 'Teko', sans-serif; font-size: 1.8rem; }
 .draft-sidebar-header p { margin: 2px 0 0 0; font-size: 0.8rem; color: #555; }
-.lista-carte-verticale { display: flex; flex-direction: column; gap: 12px; flex-grow: 1; overflow-y: auto; justify-content: center; }
+/* 1. AGGIUNGIAMO OVERFLOW-X HIDDEN AL CONTENITORE */
+.lista-carte-verticale { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+    flex-grow: 1; 
+    overflow-y: auto; 
+    overflow-x: hidden; /* <-- FIX: Nasconde per sempre la barra orizzontale */
+    justify-content: center; 
+    padding: 5px; /* Aggiunge un po' di respiro per non far sbattere le carte ai lati */
+}
 
-/* Animazioni e Stile delle Carte Custom sul Pannello Destro */
+/* 2. RIDUCIAMO LEGGERMENTE LA LARGHEZZA PER PERMETTERE LO ZOOM */
 .lista-carte-verticale .carta {
-    width: 100%;
+    width: 96%; /* <-- FIX: Invece di 100%, così ha spazio per lo scale() */
+    margin: 0 auto; /* <-- FIX: Mantiene la carta perfettamente centrata */
     background: linear-gradient(135deg, #121212 0%, #080808 100%);
     border: 1px solid #1c1c1c;
     border-radius: 12px;
@@ -641,11 +652,11 @@ h1, h2, h3, .num, .rating-numero, .nome-modulo {
 
 /* --- SCHERMATA MODALITÀ (RESTYLING PREMIUM) --- */
 .modalita-container {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    width: 90%;
-    max-width: 650px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Genera 2 colonne di larghezza perfettamente identica */
+    gap: 25px; /* Mantiene lo stesso corridoio vuoto di 25px sia in orizzontale che in verticale */
+    width: 95%;
+    max-width: 1150px; /* Allargato dai vecchi 650px per permettere a due card di stare comode affiancate */
     margin: 40px auto;
 }
 
@@ -663,6 +674,7 @@ h1, h2, h3, .num, .rating-numero, .nome-modulo {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
     position: relative;
     overflow: hidden;
+    height: 100%;
 }
 
 /* Effetto Hover sulla Card */
@@ -736,4 +748,89 @@ h1, h2, h3, .num, .rating-numero, .nome-modulo {
 
 .fade-in {
     animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* ==========================================
+   MODAL CUSTOM ALERT
+========================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Classe che accende visivamente il modal */
+.modal-overlay.attivo {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-box {
+    background: linear-gradient(145deg, #151515 0%, #080808 100%);
+    border: 2px solid var(--accento-juve);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+    transform: scale(0.8);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-overlay.attivo .modal-box {
+    transform: scale(1);
+}
+
+.modal-box h2 {
+    font-size: 2.2rem;
+    color: var(--accento-juve);
+    margin: 0 0 15px 0;
+}
+
+.modal-box p {
+    color: #ccc;
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+/* Adattiamo il bottone che avevi già creato per farlo largo tutto il modal */
+.modal-box .btn-scegli-mode {
+    width: 100%;
+}
+
+/* --- RESPONSIVE GRIGLIA MODALITÀ --- */
+
+/* Quando lo schermo scende sotto i 950px (Tablet e portatili piccoli) */
+@media (max-width: 950px) {
+    .modalita-container {
+        grid-template-columns: 1fr; /* Distrugge le 2 colonne e le rimette in fila indiana */
+        max-width: 650px; /* Ripristina la tua larghezza originale che era perfetta per la colonna singola */
+    }
+}
+
+/* Quando lo schermo scende sotto i 500px (Smartphone) */
+@media (max-width: 500px) {
+    .card-modalita {
+        padding: 20px; /* Riduciamo i margini interni per recuperare spazio vitale */
+    }
+    .modalita-info h3 {
+        font-size: 1.8rem;
+    }
+    .btn-scegli-mode {
+        padding: 10px 16px;
+        font-size: 1.1rem;
+    }
 }
