@@ -1,5 +1,8 @@
 let squadra = [];
 let nomiGiocatoriDraftati = []; // NUOVO: Array per tracciare i giocatori unici
+let fedelissimiScelti = []; // Salva i 2 leader selezionati nel modal
+let inFasePosizionamentoFedelissimi = false; // Flag per la fase di posizionamento iniziale
+let giocatoreInFaseDiPiazzamento = null;     // Tiene in memoria il giocatore appena cliccato
 let statsStagione = { giocate: 0, vittorie: 0, pareggi: 0, sconfitte: 0, punti: 0 };
 let forzaAttuale = 0;
 let inFaseMercato = false;
@@ -34,37 +37,44 @@ const btnStagione = document.querySelector(".btn-completa-stagione");
 
 const configurazioneModuli = {
     "4-3-3": [
-        { rep: "att", ruoli: ["AS", "ATT", "AD"] },
-        { rep: "cen", ruoli: ["CC", "CDC", "CC"] },
+        { rep: "att", ruoli: ["ES/AS", "ATT/AT", "ED/AD"] },
+        { rep: "cen", ruoli: ["CC/CDC", "CC/CDC", "CC/CDC"] },
         { rep: "dif", ruoli: ["TS", "DC", "DC", "TD"] },
         { rep: "por", ruoli: ["POR"] }
     ],
     "4-4-2": [
-        { rep: "att", ruoli: ["ATT", "ATT"] },
-        { rep: "cen", ruoli: ["ES", "CC", "CC", "ED"] },
+        { rep: "att", ruoli: ["ATT/AT", "ATT/AT"] },
+        { rep: "cen", ruoli: ["ES/AS", "CC/CDC", "CC/CDC", "ED/AD"] },
         { rep: "dif", ruoli: ["TS", "DC", "DC", "TD"] },
         { rep: "por", ruoli: ["POR"] }
     ],
     "3-5-2": [
-        { rep: "att", ruoli: ["ATT", "ATT"] },
+        { rep: "att", ruoli: ["ATT/AT", "ATT/AT"] },
         { rep: "cen", ruoli: ["ES", "CC", "CDC", "CC", "ED"] },
         { rep: "dif", ruoli: ["DC", "DC", "DC"] },
         { rep: "por", ruoli: ["POR"] }
     ],
     "4-2-3-1": [
         { rep: "att", ruoli: ["ATT"] },
-        { rep: "cen", ruoli: ["ES", "COC", "ED"] },
-        { rep: "cen", ruoli: ["CDC", "CDC"] },
+        { rep: "cen", ruoli: ["ES/AS", "COC/AT", "ED/AD"] },
+        { rep: "cen", ruoli: ["CDC/CC", "CDC/CC"] },
         { rep: "dif", ruoli: ["TS", "DC", "DC", "TD"] },
         { rep: "por", ruoli: ["POR"] }
     ],
     "3-4-2-1": [
         { rep: "att", ruoli: ["ATT"] },
-        { rep: "cen", ruoli: ["COC", "COC"] },
-        { rep: "cen", ruoli: ["ES", "CC", "CC", "ED"] },
+        { rep: "cen", ruoli: ["COC/AT", "COC/AT"] },
+        { rep: "cen", ruoli: ["ES", "CC/CDC", "CC/CDC", "ED"] },
         { rep: "dif", ruoli: ["DC", "DC", "DC"] },
         { rep: "por", ruoli: ["POR"] }
 
+    ],
+    "4-3-2-1": [
+        { rep: "att", ruoli: ["ATT"] },
+        { rep: "att", ruoli: ["COC/AT", "COC/AT"] },
+        { rep: "cen", ruoli: ["CC", "CC/CDC", "CC"] },
+        { rep: "dif", ruoli: ["TS", "DC", "DC", "TD"] },
+        { rep: "por", ruoli: ["POR"] }        
     ]
 };
 
@@ -108,7 +118,7 @@ function impostaModulo(modulo) {
     areaDraft.innerHTML = "<p style='color:#666; text-align:center; width:100%; margin-top:20px;'>Tocca un ruolo vuoto sul campo per iniziare il draft.</p>";
 
     if (modalitaSelezionata === 'risalita') {
-        precompilaFedelissimi();
+        avviaSceltaFedelissimi();
     }
 }
 
@@ -138,13 +148,37 @@ function costruisciCampo(moduloSelezionato) {
 }
 
 function avviaTurnoDraftManuale(elementoSlot) {
+    // Se lo slot è già occupato da un giocatore, non fare nulla
     if (elementoSlot.classList.contains("occupato")) return;
 
-    if (slotAttivo !== null) {
+    // =================================================================
+    // FIX BUG 1: GESTIONE MODALITÀ LA RISALITA (FASE FEDELISSIMI)
+    // =================================================================
+    if (modalitaSelezionata === 'risalita' && inFasePosizionamentoFedelissimi) {
+        // Controlliamo se il mister ha prima selezionato un fedelissimo dalla colonna di destra
+        if (typeof giocatoreInFaseDiPiazzamento !== 'undefined' && giocatoreInFaseDiPiazzamento !== null) {
+            // Se lo ha selezionato, procediamo al piazzamento nello slot cliccato
+            piazzaFedelissimoInSlot(giocatoreInFaseDiPiazzamento, elementoSlot);
+        } else {
+            // Se non lo ha selezionato, mostriamo l'avviso CORRETTO senza rompere il flusso
+            mostraMessaggioCustom("EHI MISTER!", "In questa fase devi prima cliccare sulla carta del Fedelissimo a destra per scegliere in che ruolo schierarlo!");
+        }
+        return; // Blocca qui l'esecuzione in modo che NON parta la logica del draft standard
+    }
+
+    // =================================================================
+    // LOGICA DRAFT STANDARD 
+    // =================================================================
+    
+    // FIX REROLL GRATUITO: Se clicco sullo slot già attivo, non fare nulla!
+    if (slotAttivo === elementoSlot) return; 
+    
+    if (slotAttivo !== null && slotAttivo !== elementoSlot) {
         mostraMessaggioCustom("ATTENZIONE", "Devi prima scegliere un giocatore dal draft per il ruolo selezionato!");
         return;
     }
 
+    // Attivazione visiva dello slot per il draft normale
     document.querySelectorAll(".slot").forEach(s => s.classList.remove("active-slot"));
     
     slotAttivo = elementoSlot;
@@ -156,14 +190,65 @@ function avviaTurnoDraftManuale(elementoSlot) {
     generaCarteDraft(ruoloRichiesto);
 }
 
+function piazzaFedelissimoInSlot(giocatore, slot) {
+    let ruoliAmmessi = slot.dataset.ruolo.split('/');
+    
+    // 1. Verifica se il fedelissimo può giocare in quel ruolo specifico
+    if (!giocatore.ruolo.some(r => ruoliAmmessi.includes(r))) {
+        mostraMessaggioCustom("RUOLO NON COMPATIBILE", `${giocatore.nome} non può giocare nel ruolo di ${slot.dataset.ruolo}!`);
+        return;
+    }
+
+    // 2. Inserisci il giocatore nella squadra e nel registro dei draftati
+    squadra.push(giocatore);
+    nomiGiocatoriDraftati.push(giocatore.nome);
+
+    // 3. Aggiorna la grafica dello slot sul campo
+    slot.classList.add("occupato");
+    slot.innerHTML = `
+        <span style="color:var(--accento-juve); font-family:'Bebas Neue', sans-serif; font-size:1.5rem;">${giocatore.rating}</span>
+        <span style="color:#fff; font-size:0.7rem; font-weight:bold; text-align:center;">${giocatore.nome.toUpperCase()}</span>
+    `;
+    slot.style.border = "1px solid var(--accento-juve)";
+    slot.style.background = "rgba(0,0,0,0.8)";
+    slot.style.cursor = "default";
+
+    // 4. Ripristina lo stile standard per tutti gli altri slot liberi
+    document.querySelectorAll(".slot:not(.occupato)").forEach(s => {
+        s.classList.remove("active-slot");
+        s.style.border = "1px dashed var(--accento-juve)";
+    });
+
+    // 5. Svuota la selezione temporanea del fedelissimo
+    giocatoreInFaseDiPiazzamento = null;
+
+    // 6. Aggiorna la sidebar destra per aggiornare la lista dei fedelissimi rimasti
+    mostraFedelissimiInSidebar();
+
+    // =================================================================
+    // FIX BUG 2: CONTROLLO DI FINE FASE ED EVITAMENTO BLOCCHI DRAFT
+    // =================================================================
+    let contatoreFedelissimiInCampo = fedelissimiScelti.filter(f => squadra.some(g => g.nome === f.nome)).length;
+    
+    if (contatoreFedelissimiInCampo === fedelissimiScelti.length) {
+        inFasePosizionamentoFedelissimi = false; // Disattiviamo la fase fedelissimi
+        slotAttivo = null;                       // RESET COMPLETO DI SLOT ATTIVO: Risolve l'errore "ATTENZIONE..."
+        
+        mostraMessaggioCustom("FEDELISSIMI SCHIERATI", "I tuoi due Fedelissimi sono in posizione! Ora clicca su un qualsiasi ruolo vuoto per iniziare il vero Draft standard.");
+    }
+}
+
 function generaCarteDraft(ruoloRichiesto) {
     areaDraft.innerHTML = "";
 
-    // NUOVO: Filtra usando nomiGiocatoriDraftati per garantire l'unicità del giocatore
-    let opzioni = databaseJuve.filter(g => g.ruolo === ruoloRichiesto && !nomiGiocatoriDraftati.includes(g.nome));
+    // === CODICE DRAFT STANDARD (Invariato) ===
+    let ruoliAccettati = ruoloRichiesto.split('/');
+    let opzioni = databaseJuve.filter(g => 
+        g.ruolo.some(r => ruoliAccettati.includes(r)) && !nomiGiocatoriDraftati.includes(g.nome)
+    );
     
     if (modalitaSelezionata === 'risalita') {
-        let opzioniScadenti = opzioni.filter(g => g.rating < 80);
+        let opzioniScadenti = opzioni.filter(g => g.rating < 82);
         if (opzioniScadenti.length > 0) {
             opzioni = opzioniScadenti.sort(() => 0.5 - Math.random());
         } else {
@@ -188,7 +273,7 @@ function generaCarteDraft(ruoloRichiesto) {
         cartaDiv.innerHTML = `
             <div class="carta-info">
                 <h3 style="margin:0; font-size:1.4rem;">${giocatore.nome}</h3>
-                <p style="margin:0; color:#888;">${giocatore.ruolo} • ${giocatore.stagione}</p>
+                <p style="margin:0; color:#888;">${giocatore.ruolo.join(' / ')} • ${giocatore.stagione}</p>
             </div>
             <div class="rating-numero" style="font-size:2.5rem; color:${colorRating}">${giocatore.rating}</div>
         `;
@@ -224,24 +309,17 @@ function scegliGiocatore(giocatoreScelto) {
 
     if (modalitaSelezionata === 'mod-fairplay') {
         if (budgetRimanente < giocatoreScelto.rating) {
-            mostraMessaggioCustom(
-                "BUDGET INSUFFICIENTE", 
-                `Non hai abbastanza punti per acquistare ${giocatoreScelto.nome}. Costa ${giocatoreScelto.rating} ma ti rimangono solo ${budgetRimanente} punti!`
-            );
+            mostraMessaggioCustom("BUDGET INSUFFICIENTE", `Non hai abbastanza punti...`);
             return;
         }
-        
         budgetRimanente -= giocatoreScelto.rating;
         const testBudget = document.getElementById("headbar-budget-count");
         testBudget.innerText = budgetRimanente;
-
-        if (budgetRimanente < 150) {
-            testBudget.style.color = "#f44336";
-        }
+        if (budgetRimanente < 150) testBudget.style.color = "#f44336";
     }
 
     squadra.push(giocatoreScelto);
-    nomiGiocatoriDraftati.push(giocatoreScelto.nome); // Aggiunge il nome alla blacklist dei doppioni
+    nomiGiocatoriDraftati.push(giocatoreScelto.nome); 
     
     slotAttivo.classList.remove("active-slot");
     slotAttivo.classList.add("occupato");
@@ -256,7 +334,6 @@ function scegliGiocatore(giocatoreScelto) {
     slotAttivo = null;
     testoRuolo.innerText = "...";
     btnStagione.innerText = `VIA ALLA STAGIONE (${squadra.length}/${MAX_GIOCATORI})`;
-    areaDraft.innerHTML = "<p style='color:#888; text-align:center; width:100%;'>Tocca il prossimo ruolo sul campo.</p>";
 
     if (squadra.length === MAX_GIOCATORI) {
         areaDraft.innerHTML = "<h3 style='color:var(--accento-juve); text-align:center; width:100%; margin-top:20px;'>SQUADRA COMPLETATA</h3><p style='color:#666; text-align:center; font-size:0.8rem;'>Procedi con la scelta del Mister</p>";
@@ -264,6 +341,9 @@ function scegliGiocatore(giocatoreScelto) {
         btnStagione.classList.add("attivo");
         btnStagione.innerText = "SCEGLI ALLENATORE";
         btnStagione.onclick = avviaDraftAllenatore; 
+    } else {
+        // NUOVO CODICE AGGIUNTO QUI: Svuota l'area draft per il prossimo turno
+        areaDraft.innerHTML = "<p style='color:#666; text-align:center; width:100%; margin-top:20px;'>Tocca un ruolo vuoto sul campo per continuare il draft.</p>";
     }
 }
 
@@ -371,7 +451,9 @@ function simulaStagioneFinale() {
 
     squadreSerieA.forEach(squadraNome => {
         let base = forzaStorica[squadraNome] || 75;
-        let forzaVariabile = base + Math.floor(Math.random() * 6) - 2; 
+        // Modificato: riduciamo il range casuale. Ora le squadre avversarie oscilleranno tra -3 e +1.
+        // In questo modo eviti che Inter o Milan schizzino a livelli imbattibili per puro caso.
+        let forzaVariabile = base + Math.floor(Math.random() * 5) - 3; 
         classificaSerieA.push({ nome: squadraNome, punti: 0, v: 0, p: 0, s: 0, forza: forzaVariabile });
     });
 
@@ -402,9 +484,14 @@ function avviaLoopCampionato(daGiornata, aGiornata, callbackFine) {
         let avversarioOggi = squadreSerieA[indiceAvversario];
         let datiAvversario = classificaSerieA.find(s => s.nome === avversarioOggi);
 
-        let diff = forzaAttuale - datiAvversario.forza;
-        let baseGolJuve = Math.max(0, Math.floor(Math.random() * 3) + (diff > 5 ? 1 : 0));
-        let baseGolAvv = Math.max(0, Math.floor(Math.random() * 3) + (diff < -5 ? 1 : 0));
+        // FIX PAREGGITE: Aggiungiamo un bonus "forma" casuale da 0 a 5 per sbloccare le partite tese
+        let boostJuve = Math.floor(Math.random() * 6); 
+        let boostAvv = Math.floor(Math.random() * 6);  
+        let diffReale = (forzaAttuale + boostJuve) - (datiAvversario.forza + boostAvv);
+
+        // Sostituisci le righe dei gol con queste:
+        let baseGolJuve = Math.max(0, Math.floor(Math.random() * 3) + (diffReale >= 4 ? 1 : 0) + (diffReale >= 8 ? 1 : 0));
+        let baseGolAvv = Math.max(0, Math.floor(Math.random() * 3) + (diffReale <= -4 ? 1 : 0) + (diffReale <= -8 ? 1 : 0));
 
         statsStagione.giocate++;
         statsStagione.golFatti += baseGolJuve;
@@ -445,11 +532,11 @@ function avviaLoopCampionato(daGiornata, aGiornata, callbackFine) {
             let tiratori = [];
     
             if (estrattore < 0.75) {
-                tiratori = squadra.filter(g => ["ATT", "AS", "AD", "COC"].includes(g.ruolo));
+                tiratori = squadra.filter(g => g.ruolo.some(r => ["ATT", "AS", "AD", "COC"].includes(r)));
             } else if (estrattore < 0.95) {
-                tiratori = squadra.filter(g => ["CC", "CDC", "ED", "ES"].includes(g.ruolo));
+                tiratori = squadra.filter(g => g.ruolo.some(r => ["CC", "CDC", "ED", "ES"].includes(r)));
             } else {
-                tiratori = squadra.filter(g => ["DC", "TD", "TS"].includes(g.ruolo));
+                tiratori = squadra.filter(g => g.ruolo.some(r => ["DC", "TD", "TS"].includes(r)));
             }
 
             if (tiratori.length === 0) {
@@ -479,37 +566,7 @@ function avviaLoopCampionato(daGiornata, aGiornata, callbackFine) {
         });
 
         classificaSerieA.sort((a, b) => b.punti - a.punti);
-        aggiornaClassificaLiveUI();
-
-        // ... [Qui c'è il tuo codice che ha appena calcolato il risultato e aggiornato i punti] ...
-
-        if (modalitaSelezionata === 'quota102') {
-    
-            // 1. Controllo Ghigliottina (Sconfitta prematura)
-            const ancoraInCorsa = verificaFattibilita102(puntiMiei, giornataCorrente);
-
-            if (!ancoraInCorsa) {
-                fermaSimulazione(); // Chiama la tua funzione che stoppa il setInterval o i loop
-        
-                const puntiMaxPossibili = puntiMiei + ((38 - giornataCorrente) * 3);
-        
-                mostraSchermataSconfitta(
-                    "SOGNO INFRANTO",
-                    `Alla giornata ${giornataCorrente} hai ${puntiMiei} punti. Anche vincendole tutte le rimanenti, arriveresti al massimo a ${puntiMaxPossibili} punti. Record di Conte irraggiungibile.`
-                );
-                return; // FONDAMENTALE: blocca l'esecuzione del resto del codice
-            }
-
-            // 2. Controllo Trionfo (Sei arrivato alla fine e ce l'hai fatta)
-            if (giornataCorrente === 38 && puntiMiei >= 103) {
-                fermaSimulazione();
-                mostraSchermataVittoria(
-                    "LEGENDA ASSOLUTA!", 
-                    `Hai chiuso a ${puntiMiei} punti! Antonio Conte sta piangendo in conferenza stampa.`
-                );
-                return;
-            }
-        }       
+        aggiornaClassificaLiveUI();      
 
         let stringaMarcatori = chiHaSegnato.length > 0 ? ` (${chiHaSegnato.join(", ")})` : "";
         ticker.innerHTML = `<div style="text-align:center;">
@@ -520,7 +577,7 @@ function avviaLoopCampionato(daGiornata, aGiornata, callbackFine) {
 
         cronologia.innerHTML = `
             <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1a1a1a; padding-bottom:4px;">
-                <span style="color:#666; width:70px;">Giar. ${giornataAttuale}</span>
+                <span style="color:#666; width:70px;">Gior. ${giornataAttuale}</span>
                 <span style="flex:1; text-align:left;">vs ${avversarioOggi}</span>
                 <span style="font-weight:bold; color:${baseGolJuve >= baseGolAvv ? (baseGolJuve === baseGolAvv ? '#ffeb3b' : '#4caf50') : '#f44336'}">${baseGolJuve} - ${baseGolAvv}</span>
             </div>
@@ -612,9 +669,8 @@ function apriPannelloScambio() {
 function generaOpzioniAcquisto(indexGiocatoreDaTagliare) {
     let tagliato = squadra[indexGiocatoreDaTagliare];
     
-    // Rimuove temporaneamente il giocatore tagliato dalla blacklist dei doppioni
-    let oldIndex = nomiGiocatoriDraftati.indexOf(tagliato.nome);
-    if(oldIndex !== -1) nomiGiocatoriDraftati.splice(oldIndex, 1);
+    // 🔥 FIX SINO-ANNATE: Non rimuoviamo il nome qui, così il vecchio giocatore 
+    // rimane inserito nei "nomiGiocatoriDraftati" e blocca i suoi cloni di altre annate!
 
     // Calcolo del budget specifico per il FPF
     let budgetMercato = 9999;
@@ -622,10 +678,12 @@ function generaOpzioniAcquisto(indexGiocatoreDaTagliare) {
         budgetMercato = budgetRimanente + tagliato.rating;
     }
 
-    // Filtra il DB in base al ruolo, verificando l'unicità dei nomi
+    // 🔥 FIX RUOLI: Prendiamo il ruolo principale (il primo dell'array) del giocatore che stai sostituendo
+    let ruoloPrincipale = tagliato.ruolo[0];
+
+    // Filtra il DB: i candidati devono avere quel ruolo specifico tra i loro ruoli e non essere doppioni
     let opzioniCompatibili = databaseJuve.filter(g => 
-        g.ruolo === tagliato.ruolo && 
-        !nomiGiocatoriDraftati.includes(g.nome)
+        g.ruolo.includes(ruoloPrincipale) && !nomiGiocatoriDraftati.includes(g.nome)
     );
 
     // Nella modalità FPF, i giocatori in vetrina non possono costare più del budget ricalcolato
@@ -673,6 +731,10 @@ function generaOpzioniAcquisto(indexGiocatoreDaTagliare) {
                     testBudget.style.color = budgetRimanente < 150 ? "#f44336" : "#ffcc00";
                 }
             }
+
+            // 🔥 FIX DOPIE ANNATE (Parte 2): Rimuoviamo il vecchio nome solo ADESSO che lo scambio è confermato
+            let oldIndex = nomiGiocatoriDraftati.indexOf(tagliato.nome);
+            if (oldIndex !== -1) nomiGiocatoriDraftati.splice(oldIndex, 1);
 
             squadra[indexGiocatoreDaTagliare] = nuovoG;
             nomiGiocatoriDraftati.push(nuovoG.nome); // Blocca il nuovo nome estratto
@@ -896,9 +958,13 @@ function avviaGironeChampions(giornataAttuale, maxGiornate, calendarioJuve, call
         let juveObj = classificaEuropa.find(s => s.nome === "Juventus (Tu)");
         let avvObj = classificaEuropa.find(s => s.nome === avversarioOggi);
 
-        let diffJuve = forzaAttuale - avvObj.forza;
-        let golJuve = Math.max(0, Math.floor(Math.random() * 3) + (diffJuve > 5 ? 1 : 0) + (diffJuve > 12 ? 1 : 0));
-        let golAvv = Math.max(0, Math.floor(Math.random() * 3) + (diffJuve < -5 ? 1 : 0) + (diffJuve < -12 ? 1 : 0));
+        let boostJuve = Math.floor(Math.random() * 6); 
+        let boostAvv = Math.floor(Math.random() * 6);  
+        let diffReale = (forzaAttuale + boostJuve) - (avvObj.forza + boostAvv);
+
+        // Sostituisci le righe dei gol con queste:
+        let golJuve = Math.max(0, Math.floor(Math.random() * 3) + (diffReale >= 4 ? 1 : 0) + (diffReale >= 9 ? 1 : 0));
+        let golAvv = Math.max(0, Math.floor(Math.random() * 3) + (diffReale <= -4 ? 1 : 0) + (diffReale <= -9 ? 1 : 0));
 
         juveObj.golFatti += golJuve; juveObj.golSubiti += golAvv; juveObj.diffReti += (golJuve - golAvv);
         avvObj.golFatti += golAvv; avvObj.golSubiti += golJuve; avvObj.diffReti += (golAvv - golJuve);
@@ -1243,46 +1309,233 @@ const squadreSerieB2006 = [
     "Modena", "Spezia", "Cesena"
 ];
 
-function precompilaFedelissimi() {
-    const idFedelissimi = [9, 149, 190, 194]; 
+// ==========================================================================
+// NUOVA LOGICA DI SELEZIONE E POSIZIONAMENTO FEDELISSIMI (A CLICK)
+// ==========================================================================
 
-    idFedelissimi.forEach(id => {
-        let giocatore = databaseJuve.find(g => g.id === id);
-        if(!giocatore) return;
+function avviaSceltaFedelissimi() {
+    const modal = document.getElementById("modal-fedelissimi");
+    const griglia = document.getElementById("griglia-scelta");
+    const containerDestra = document.getElementById("container-scelti-destra");
+    const btnConferma = document.getElementById("btn-conferma-fedelissimi");
 
-        let slotDisponibili = Array.from(document.querySelectorAll(".slot:not(.occupato)"));
-        let slotTarget = null;
+    modal.style.display = "flex";
+    griglia.innerHTML = "";
+    containerDestra.innerHTML = "";
+    fedelissimiScelti = [];
+    
+    btnConferma.disabled = true;
+    btnConferma.style.opacity = "0.4";
+    btnConferma.style.cursor = "not-allowed";
+    btnConferma.innerText = "CONFERMA SCELTE (0/2)";
 
-        slotTarget = slotDisponibili.find(s => s.dataset.ruolo === giocatore.ruolo);
+    // Generiamo il pool dei campioni simbolo per la rinascita
+    const iconeRinascita = ["G. Buffon", "A. Del Piero", "P. Nedved", "M. Camoranesi", "D. Trezeguet", "G. Chiellini"];
+    let poolFedeli = [];
+    
+    iconeRinascita.forEach(nome => {
+        let giocatore = databaseJuve.find(g => g.nome === nome && (g.stagione === "06/07" || g.stagione === "02/03" || g.stagione === "01/02" || g.stagione === "07/08" || g.stagione === "05/06" || g.stagione === "11/12"));
+        if (!giocatore) giocatore = databaseJuve.find(g => g.nome === nome);
+        if (giocatore) poolFedeli.push(giocatore);
+    });
 
-        if (!slotTarget) {
-            if (giocatore.nome === "P. Nedved") {
-                slotTarget = slotDisponibili.find(s => ["AS", "CC", "COC", "ED"].includes(s.dataset.ruolo));
-            } else if (giocatore.nome === "A. Del Piero" || giocatore.nome === "D. Trezeguet") {
-                slotTarget = slotDisponibili.find(s => ["AS", "AD", "COC"].includes(s.dataset.ruolo));
+    poolFedeli.forEach(giocatore => {
+        const card = document.createElement("div");
+        card.style.background = "#111";
+        card.style.border = "1px solid #333";
+        card.style.borderRadius = "8px";
+        card.style.padding = "15px";
+        card.style.textAlign = "center";
+        card.style.cursor = "pointer";
+        card.style.transition = "all 0.2s ease";
+        
+        card.innerHTML = `
+            <div style="font-family:'Bebas Neue', sans-serif; font-size:1.4rem; color:var(--accento-juve);">${giocatore.nome}</div>
+            <div style="font-size:0.75rem; color:#888; margin: 2px 0;">${giocatore.ruolo.join('/')} • ${giocatore.stagione}</div>
+            <div style="font-size:1.8rem; font-weight:bold; color:#fff; margin-top:5px;">${giocatore.rating}</div>
+        `;
+
+        card.addEventListener("click", () => {
+            if (fedelissimiScelti.some(g => g.id === giocatore.id)) {
+                fedelissimiScelti = fedelissimiScelti.filter(g => g.id !== giocatore.id);
+                card.style.border = "1px solid #333";
+                card.style.background = "#111";
+            } else {
+                if (fedelissimiScelti.length < 2) {
+                    fedelissimiScelti.push(giocatore);
+                    card.style.border = "2px solid var(--accento-juve)";
+                    card.style.background = "rgba(224, 200, 112, 0.08)";
+                } else {
+                    alert("Puoi scegliere al massimo 2 fedelissimi!");
+                }
             }
+            aggiornaRecapFedelissimi();
+        });
+
+        griglia.appendChild(card);
+    });
+}
+
+function aggiornaRecapFedelissimi() {
+    const containerDestra = document.getElementById("container-scelti-destra");
+    const btnConferma = document.getElementById("btn-conferma-fedelissimi");
+    
+    containerDestra.innerHTML = "";
+    
+    fedelissimiScelti.forEach(g => {
+        const voce = document.createElement("div");
+        voce.style.background = "#1c1c1c";
+        voce.style.padding = "10px";
+        voce.style.borderRadius = "6px";
+        voce.style.borderLeft = "4px solid var(--accento-juve)";
+        voce.style.display = "flex";
+        voce.style.justifyContent = "space-between";
+        voce.style.alignItems = "center";
+        
+        voce.innerHTML = `
+            <div>
+                <strong style="color:#fff; font-size:0.9rem;">${g.nome}</strong>
+                <span style="display:block; font-size:0.7rem; color:#666;">${g.ruolo.join('/')}</span>
+            </div>
+            <strong style="color:var(--accento-juve); font-size:1.2rem;">${g.rating}</strong>
+        `;
+        containerDestra.appendChild(voce);
+    });
+
+    btnConferma.innerText = `CONFERMA SCELTE (${fedelissimiScelti.length}/2)`;
+    
+    if (fedelissimiScelti.length === 2) {
+        btnConferma.disabled = false;
+        btnConferma.style.opacity = "1";
+        btnConferma.style.cursor = "pointer";
+    } else {
+        btnConferma.disabled = true;
+        btnConferma.style.opacity = "0.4";
+        btnConferma.style.cursor = "not-allowed";
+    }
+}
+
+function confermaEIniziaPosizionamento() {
+    document.getElementById("modal-fedelissimi").style.display = "none";
+    inFasePosizionamentoFedelissimi = true;
+    
+    mostraFedelissimiInSidebar();
+}
+
+// =================================================================
+// FUNZIONE PER RENDERE L'ESTETICA DEI FEDELISSIMI IDENTICA AL DRAFT
+// =================================================================
+function mostraFedelissimiInSidebar() {
+    const areaDraft = document.getElementById("area-draft");
+    areaDraft.innerHTML = ""; // Svuota l'area per rigenerarla
+
+    // Filtra i fedelissimi scelti che NON sono ancora stati posizionati in campo
+    let rimasti = fedelissimiScelti.filter(f => !squadra.some(g => g.nome === f.nome));
+
+    // Se li hai posizionati tutti, svuota la sidebar e imposta il testo di default
+    if (rimasti.length === 0) {
+        testoRuolo.innerText = "...";
+        areaDraft.innerHTML = "<p style='color:#666; text-align:center; width:100%; margin-top:20px;'>Tutti i fedelissimi sono in campo. Clicca su un ruolo vuoto per il draft standard.</p>";
+        return;
+    }
+
+    testoRuolo.innerText = "SCONTO SERIE B";
+
+    // Genera le carte con lo stesso identico layout del Pull standard
+    rimasti.forEach((giocatore, index) => {
+        const cartaDiv = document.createElement("div");
+        cartaDiv.classList.add("carta");
+        cartaDiv.style.animationDelay = `${index * 0.1}s`;
+
+        // Se hai cliccato su questo fedelissimo, dagli un feedback visivo di selezione
+        if (giocatoreInFaseDiPiazzamento === giocatore) {
+            cartaDiv.style.border = "2px solid var(--accento-juve)";
+            cartaDiv.style.background = "rgba(224, 200, 112, 0.15)";
         }
 
-        if (slotTarget) {
-            squadra.push(giocatore);
-            nomiGiocatoriDraftati.push(giocatore.nome); // Blocca il nome del fedelissimo
+        // Struttura HTML speculare a generaCarteDraft()
+        cartaDiv.innerHTML = `
+            <div class="carta-info">
+                <h3 style="margin:0; font-size:1.4rem;">${giocatore.nome}</h3>
+                <p style="margin:0; color:#888;">${giocatore.ruolo.join(' / ')} • Stagione ${giocatore.stagione}</p>
+            </div>
+            <div class="rating-numero" style="font-size:2.5rem; color:#fff">${giocatore.rating}</div>
+        `;
 
-            slotTarget.classList.remove("active-slot");
-            slotTarget.classList.add("occupato");
+        // Al click, seleziona il fedelissimo per il piazzamento sul campo
+        cartaDiv.addEventListener("click", () => {
+            giocatoreInFaseDiPiazzamento = giocatore;
             
-            slotTarget.innerHTML = `
-                <span style="color:#ffcc00; font-family:'Bebas Neue', sans-serif; font-size:1.5rem;">${giocatore.rating}</span>
-                <span style="color:#fff; font-size:0.7rem; font-weight:bold; text-align:center;">${giocatore.nome.toUpperCase()}</span>
-            `;
-            slotTarget.style.border = "2px solid #ffcc00"; 
-            slotTarget.style.background = "linear-gradient(135deg, rgba(30,25,0,0.9), rgba(0,0,0,0.9))";
-            slotTarget.style.cursor = "default";
+            // Rinfresca la sidebar per applicare lo stile "selezionato"
+            mostraFedelissimiInSidebar();
+            
+            mostraMessaggioCustom(
+                "MISTER, SCHIERALO!", 
+                `Hai selezionato ${giocatore.nome}. Clicca su uno slot vuoto a sinistra compatibile con i ruoli: ${giocatore.ruolo.join(', ')}`
+            );
+        });
+
+        areaDraft.appendChild(cartaDiv);
+    });
+}
+
+function apriSceltaRuoloFedelissimo(giocatore) {
+    giocatoreInFaseDiPiazzamento = giocatore;
+
+    // 1. Resetta tutti gli slot per rimuovere vecchi highlight
+    const tuttiGliSlot = document.querySelectorAll(".slot");
+    tuttiGliSlot.forEach(slot => {
+        slot.classList.remove("active-slot");
+        if (!slot.classList.contains("occupato")) {
+            slot.style.border = "1px dashed var(--accento-juve)";
+            slot.onclick = () => avviaTurnoDraftManuale(slot); // Ripristina il click normale
         }
     });
 
-    const btnStagione = document.querySelector(".btn-completa-stagione");
-    if(btnStagione) {
-        btnStagione.innerText = `VIA ALLA STAGIONE (${squadra.length}/${MAX_GIOCATORI})`;
+    // 2. Trova e illumina solo gli slot compatibili col ruolo
+    const slotsDisponibili = document.querySelectorAll(".slot:not(.occupato)");
+    let ruoloTrovato = false;
+
+    slotsDisponibili.forEach(slot => {
+        let ruoliAmmessi = slot.dataset.ruolo.split('/');
+        
+        if (giocatore.ruolo.some(r => ruoliAmmessi.includes(r))) {
+            ruoloTrovato = true;
+            slot.classList.add("active-slot");
+            slot.style.border = "2px solid #ffeb3b";
+            slot.style.cursor = "pointer";
+
+            // 3. Al click sullo slot compatibile, piazza il Fedelissimo
+            slot.onclick = () => {
+                squadra.push(giocatore);
+                nomiGiocatoriDraftati.push(giocatore.nome);
+
+                slot.classList.remove("active-slot");
+                slot.classList.add("occupato");
+                slot.innerHTML = `
+                    <span style="color:var(--accento-juve); font-family:'Bebas Neue', sans-serif; font-size:1.5rem;">${giocatore.rating}</span>
+                    <span style="color:#fff; font-size:0.7rem; font-weight:bold; text-align:center;">${giocatore.nome.toUpperCase()}</span>
+                `;
+                slot.style.border = "1px solid var(--accento-juve)";
+                slot.style.background = "rgba(0,0,0,0.8)";
+                slot.style.cursor = "default";
+                slot.onclick = null;
+
+                // Spegni gli altri highlight e ripristina i click normali
+                document.querySelectorAll(".slot:not(.occupato)").forEach(s => {
+                    s.classList.remove("active-slot");
+                    s.style.border = "1px dashed var(--accento-juve)";
+                    s.onclick = () => avviaTurnoDraftManuale(s);
+                });
+
+                giocatoreInFaseDiPiazzamento = null;
+                mostraFedelissimiInSidebar(); // Ricarica la sidebar per rimuovere il giocatore appena piazzato
+            };
+        }
+    });
+
+    if (!ruoloTrovato) {
+        mostraMessaggioCustom("ATTENZIONE", "Non ci sono slot liberi compatibili con i ruoli di questo giocatore!");
     }
 }
 
@@ -1330,9 +1583,13 @@ function avviaLoopSerieB(daGiornata, aGiornata) {
         let avversarioOggi = squadreSerieB2006[indiceAvversario];
         let datiAvversario = classificaSerieA.find(s => s.nome === avversarioOggi);
 
-        let diff = forzaAttuale - datiAvversario.forza;
-        let baseGolJuve = Math.max(0, Math.floor(Math.random() * 3) + (diff > 5 ? 1 : 0));
-        let baseGolAvv = Math.max(0, Math.floor(Math.random() * 3) + (diff < -5 ? 1 : 0));
+        let boostJuve = Math.floor(Math.random() * 6); 
+        let boostAvv = Math.floor(Math.random() * 6);  
+        let diffReale = (forzaAttuale + boostJuve) - (datiAvversario.forza + boostAvv);
+
+        // Sostituisci le righe dei gol con queste:
+        let baseGolJuve = Math.max(0, Math.floor(Math.random() * 3) + (diffReale >= 4 ? 1 : 0) + (diffReale >= 8 ? 1 : 0));
+        let baseGolAvv = Math.max(0, Math.floor(Math.random() * 3) + (diffReale <= -4 ? 1 : 0) + (diffReale <= -8 ? 1 : 0));
 
         statsStagione.giocate++;
         statsStagione.golFatti += baseGolJuve;
@@ -1358,14 +1615,18 @@ function avviaLoopSerieB(daGiornata, aGiornata) {
         for (let i = 0; i < baseGolJuve; i++) {
             let estrattore = Math.random();
             let tiratori = [];
+            
             if (estrattore < 0.75) {
-                tiratori = squadra.filter(g => ["ATT", "AS", "AD", "COC"].includes(g.ruolo));
+                tiratori = squadra.filter(g => g.ruolo.some(r => ["ATT", "AS", "AD", "COC"].includes(r)));
             } else if (estrattore < 0.95) {
-                tiratori = squadra.filter(g => ["CC", "CDC", "ED", "ES"].includes(g.ruolo));
+                tiratori = squadra.filter(g => g.ruolo.some(r => ["CC", "CDC", "ED", "ES"].includes(r)));
             } else {
-                tiratori = squadra.filter(g => ["DC", "TD", "TS"].includes(g.ruolo));
+                tiratori = squadra.filter(g => g.ruolo.some(r => ["DC", "TD", "TS"].includes(r)));
             }
-            if (tiratori.length === 0) tiratori = squadra.filter(g => g.ruolo !== "POR");
+            
+            if (tiratori.length === 0) {
+                tiratori = squadra.filter(g => !g.ruolo.includes("POR"));
+            }
             
             let m = tiratori[Math.floor(Math.random() * tiratori.length)];
             if(m){ registroGolMarcatori[m.nome]++; chiHaSegnato.push(m.nome); }
@@ -1393,7 +1654,7 @@ function avviaLoopSerieB(daGiornata, aGiornata) {
 
         cronologia.innerHTML = `
             <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1a1a1a; padding-bottom:4px;">
-                <span style="color:#666; width:70px;">Giar. ${giornataAttuale}</span>
+                <span style="color:#666; width:70px;">Gior. ${giornataAttuale}</span>
                 <span style="flex:1; text-align:left;">vs ${avversarioOggi}</span>
                 <span style="font-weight:bold; color:${baseGolJuve >= baseGolAvv ? (baseGolJuve === baseGolAvv ? '#ffeb3b' : '#4caf50') : '#f44336'}">${baseGolJuve} - ${baseGolAvv}</span>
             </div>
@@ -1468,13 +1729,12 @@ function mostraFineSerieB() {
 }
 
 function verificaFattibilita102(puntiAttuali, giornateGiocate) {
-    const OBIETTIVO_PUNTI = 103; // "Battere" 102 significa fare almeno 103
+    const OBIETTIVO_PUNTI = 103; 
     const GIORNATE_TOTALI = 38;
 
     const giornateRimanenti = GIORNATE_TOTALI - giornateGiocate;
     const puntiMassimiOttenibili = puntiAttuali + (giornateRimanenti * 3);
 
-    // Ritorna TRUE se sei ancora in corsa, FALSE se sei matematicamente spacciato
     return puntiMassimiOttenibili >= OBIETTIVO_PUNTI; 
 }
 
@@ -1519,28 +1779,29 @@ function avviaLoopRoguelike(daGiornata, aGiornata) {
     loopSimulazione = setInterval(() => {
         if (giornataAttuale > aGiornata) {
             clearInterval(loopSimulazione);
-            mostraFineCampionatoCompleta(); // Usiamo il recap classico
+            mostraFineCampionatoCompleta(); 
             return;
         }
 
-        // 1. GESTIONE BUFF/DEBUFF TEMPORANEI
         let forzaEffettiva = forzaAttuale;
         if (durataEffettoRoguelike > 0) {
             forzaEffettiva += forzaModificataRoguelike;
             durataEffettoRoguelike--;
         }
 
-        // 2. CALCOLO PARTITA
         document.getElementById("giornata-corrente").innerText = `GIORNATA ${giornataAttuale}`;
         let indiceAvversario = (giornataAttuale - 1) % squadreSerieA.length;
         let avversarioOggi = squadreSerieA[indiceAvversario];
         let datiAvversario = classificaSerieA.find(s => s.nome === avversarioOggi);
 
-        let diff = forzaEffettiva - datiAvversario.forza;
-        let baseGolJuve = Math.max(0, Math.floor(Math.random() * 3) + (diff > 5 ? 1 : 0));
-        let baseGolAvv = Math.max(0, Math.floor(Math.random() * 3) + (diff < -5 ? 1 : 0));
+        let boostJuve = Math.floor(Math.random() * 6); 
+        let boostAvv = Math.floor(Math.random() * 6);  
+        let diffReale = (forzaEffettiva + boostJuve) - (datiAvversario.forza + boostAvv);
 
-        // Aggiorna statistiche
+        // Sostituisci le righe dei gol con queste:
+        let baseGolJuve = Math.max(0, Math.floor(Math.random() * 3) + (diffReale >= 4 ? 1 : 0) + (diffReale >= 8 ? 1 : 0));
+        let baseGolAvv = Math.max(0, Math.floor(Math.random() * 3) + (diffReale <= -4 ? 1 : 0) + (diffReale <= -8 ? 1 : 0));
+
         statsStagione.giocate++; statsStagione.golFatti += baseGolJuve; statsStagione.golSubiti += baseGolAvv;
         let juveObj = classificaSerieA.find(s => s.nome === "Juventus (Tu)");
 
@@ -1548,19 +1809,22 @@ function avviaLoopRoguelike(daGiornata, aGiornata) {
         else if (baseGolJuve === baseGolAvv) { statsStagione.pareggi++; statsStagione.punti += 1; juveObj.punti += 1; juveObj.p++; datiAvversario.punti += 1; datiAvversario.p++; } 
         else { statsStagione.sconfitte++; juveObj.s++; datiAvversario.punti += 3; datiAvversario.v++; }
 
-        // Gol simulati
         let chiHaSegnato = [];
         for (let i = 0; i < baseGolJuve; i++) {
             let estrattore = Math.random();
-            let tiratori = estrattore < 0.75 ? squadra.filter(g => ["ATT", "AS", "AD", "COC"].includes(g.ruolo)) : 
-                           estrattore < 0.95 ? squadra.filter(g => ["CC", "CDC", "ED", "ES"].includes(g.ruolo)) : 
-                           squadra.filter(g => ["DC", "TD", "TS"].includes(g.ruolo));
-            if (tiratori.length === 0) tiratori = squadra.filter(g => g.ruolo !== "POR");
+            
+            // CORREZIONE: Uso di .some() per esplorare correttamente l'array dei ruoli del giocatore
+            let tiratori = estrattore < 0.75 ? squadra.filter(g => g.ruolo.some(r => ["ATT", "AS", "AD", "COC"].includes(r))) : 
+                           estrattore < 0.95 ? squadra.filter(g => g.ruolo.some(r => ["CC", "CDC", "ED", "ES"].includes(r))) : 
+                           squadra.filter(g => g.ruolo.some(r => ["DC", "TD", "TS"].includes(r)));
+            
+            // CORREZIONE: Uso di !includes("POR") al posto di !== "POR"
+            if (tiratori.length === 0) tiratori = squadra.filter(g => !g.ruolo.includes("POR"));
+            
             let m = tiratori[Math.floor(Math.random() * tiratori.length)];
             if(m){ registroGolMarcatori[m.nome]++; chiHaSegnato.push(m.nome); }
         }
 
-        // Aggiornamento resto della A e UI
         classificaSerieA.forEach(s => {
             if (s.nome !== "Juventus (Tu)" && s.nome !== avversarioOggi) {
                 let prob = 0.42 + (s.forza - 78) * 0.025; 
@@ -1581,7 +1845,7 @@ function avviaLoopRoguelike(daGiornata, aGiornata) {
 
         cronologia.innerHTML = `
             <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1a1a1a; padding-bottom:4px;">
-                <span style="color:#666; width:70px;">Giar. ${giornataAttuale}</span>
+                <span style="color:#666; width:70px;">Gior. ${giornataAttuale}</span>
                 <span style="flex:1; text-align:left;">vs ${avversarioOggi}</span>
                 <span style="font-weight:bold; color:${baseGolJuve >= baseGolAvv ? (baseGolJuve === baseGolAvv ? '#ffeb3b' : '#4caf50') : '#f44336'}">${baseGolJuve} - ${baseGolAvv}</span>
             </div>
@@ -1589,13 +1853,12 @@ function avviaLoopRoguelike(daGiornata, aGiornata) {
 
         giornataAttuale++;
 
-        // 3. ESTRAZIONE IMPREVISTO (12% di probabilità a fine partita)
         if (Math.random() < 0.12 && giornataAttuale <= aGiornata) {
-            clearInterval(loopSimulazione); // Mettiamo in pausa
+            clearInterval(loopSimulazione); 
             innescaEventoRoguelike();
         }
 
-    }, 500); // 500ms dà il tempo di leggere
+    }, 500); 
 }
 
 function innescaEventoRoguelike() {
@@ -1606,18 +1869,16 @@ function innescaEventoRoguelike() {
         forzaModificataRoguelike = evento.valore;
         durataEffettoRoguelike = evento.durata;
         
-        // Passiamo la funzione di sblocco come terzo argomento
         mostraMessaggioCustom("IMPREVISTO!", `${evento.titolo}\n\n${evento.testo}`, () => {
-            avviaLoopRoguelike(giornataAttuale, 38); // Riparte SOLO quando l'utente clicca OK
+            avviaLoopRoguelike(giornataAttuale, 38); 
         });
         
     } else if (evento.tipo === "bonus_perm") {
         forzaAttuale += evento.valore;
         classificaSerieA.find(s => s.nome === "Juventus (Tu)").forza = forzaAttuale;
         
-        // Anche qui isoliamo il riavvio nel click di conferma
         mostraMessaggioCustom("SVOLTA STAGIONALE", `${evento.titolo}\n\n${evento.testo}`, () => {
-            avviaLoopRoguelike(giornataAttuale, 38); // Riparte SOLO quando l'utente clicca OK
+            avviaLoopRoguelike(giornataAttuale, 38); 
         });
         
     } else if (evento.tipo === "sostituzione") {
@@ -1633,13 +1894,12 @@ function innescaEventoRoguelike() {
         let oldIndex = nomiGiocatoriDraftati.indexOf(tagliato.nome);
         if(oldIndex !== -1) nomiGiocatoriDraftati.splice(oldIndex, 1);
 
-        // MODIFICA QUI: Escludiamo anche le altre versioni/annate del giocatore appena tagliato
         let opzioniCompatibili = databaseJuve.filter(g => 
-            g.ruolo === tagliato.ruolo && 
-            !nomiGiocatoriDraftati.includes(g.nome) && 
-            g.nome !== tagliato.nome // <-- Questo blocca lo stesso giocatore
+            g.ruolo.some(r => tagliato.ruolo.includes(r)) && 
+            !nomiGiocatoriDraftati.includes(g.nome) &&
+            g.nome !== tagliato.nome
         );
-        
+
         let treProposte = opzioniCompatibili.sort(() => 0.5 - Math.random()).slice(0, 3);
 
         let boxAcquisti = document.getElementById("opzioni-roguelike-box");

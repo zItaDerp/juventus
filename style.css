@@ -48,9 +48,46 @@ h1, h2, h3, .num, .rating-numero, .nome-modulo {
 /* 2. MODULI */
 .titolo-centrato { text-align: center; margin-bottom: 50px; }
 .titolo-centrato h2 { font-family: 'Teko', sans-serif; font-size: 3rem; color: var(--oro); margin: 0; }
-.grid-moduli { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
-.card-modulo { background: var(--sfondo-card); border: 1px solid #333; border-radius: 8px; width: 200px; cursor: pointer; transition: 0.3s; text-align: center; overflow: hidden; }
-.card-modulo:hover { border-color: var(--oro); transform: translateY(-5px); }
+.grid-moduli {
+    display: grid;
+    /* Crea colonne flessibili che vanno a capo automaticamente. 
+       Regola i 160px/180px in base alla larghezza ideale del tuo campetto */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 30px; /* Spazio uniforme sia orizzontale che verticale tra i moduli */
+    justify-content: center;
+    align-items: center;
+    max-width: 1000px; /* Limita la larghezza massima per non farli allargare all'infinito */
+    margin: 40px auto; /* Centra la griglia nella pagina */
+    padding: 20px;
+}
+
+.card-modulo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    
+    /* --- NUOVI STILI DARK MODE --- */
+    background: linear-gradient(145deg, #151515 0%, #080808 100%); /* Sfondo scuro coerente */
+    border: 1px solid #222; /* Bordo sottile e discreto */
+    border-radius: 16px; 
+    padding: 20px; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); /* Ombra profonda */
+    
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Effetto Hover "Premium" */
+.card-modulo:hover {
+    border-color: var(--accento-juve); /* Oro Juventus al passaggio del mouse */
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(224, 200, 112, 0.15);
+    background: linear-gradient(145deg, #1c1c1c 0%, #0a0a0a 100%);
+}
 .mini-campo { height: 220px; background: repeating-linear-gradient(0deg, var(--verde-campo), var(--verde-campo) 20px, #143020 20px, #143020 40px); display: flex; flex-direction: column; justify-content: space-evenly; }
 .riga-campo { display: flex; justify-content: center; gap: 15px; }
 .dot { width: 10px; height: 10px; background: #ffcc00; border-radius: 50%; box-shadow: 0 0 5px #000; }
@@ -833,4 +870,61 @@ h1, h2, h3, .num, .rating-numero, .nome-modulo {
         padding: 10px 16px;
         font-size: 1.1rem;
     }
+}
+
+/* --- STILI VERTICALI FEDELISSIMI --- */
+.carta-fedelissimo {
+    background: linear-gradient(180deg, #1f1f1f 0%, #0d0d0d 100%);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    min-height: 240px;
+    position: relative;
+}
+
+.carta-fedelissimo:hover {
+    border-color: #555;
+    transform: translateY(-4px);
+}
+
+/* Stato attivo quando la carta è selezionata (Illuminazione Oro) */
+.carta-fedelissimo.selezionata {
+    border-color: var(--accento-juve);
+    box-shadow: 0 0 15px rgba(224, 200, 112, 0.4);
+    background: linear-gradient(180deg, #2a2515 0%, #0d0d0d 100%);
+}
+
+/* Mini box per la lista di destra */
+.mini-box-scelto {
+    background: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.mini-box-scelto:hover {
+    border-color: var(--accento-juve);
+    background: #222;
+}
+.mini-box-scelto.pronto-da-piazzare {
+    border-color: #ffeb3b;
+    box-shadow: 0 0 10px rgba(255, 235, 59, 0.3);
+    animation: pulseGlow 1.5s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; border-color: var(--accento-juve); }
+    100% { opacity: 0.8; }
 }
