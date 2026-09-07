@@ -3,129 +3,640 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juve 38·0 - Il Manageriale Bianconero</title>
+    <title>Juve 38·0</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="schermata-iniziale" class="schermo attivo">
-        <!-- Header -->
-        <header class="juve-header">
-            <!-- Logo SVG stilizzato della Juventus (Forma a J / Scudetto) -->
-            <svg class="juve-logo-svg" viewBox="0 0 100 100" width="45" height="45">
-                <!-- Striscia Oro -->
+    
+    <div class="hub-split-layout">
+        
+        <!-- PARTE SINISTRA: LOGO E TITOLO GIGANTI -->
+        <div class="hub-left-side">
+            <svg class="juve-logo-gigante" viewBox="0 0 100 100" width="180" height="180">
                 <path d="M 35 15 L 65 15 L 65 65 C 65 80 50 90 35 80 L 35 68 C 48 75 53 68 53 60 L 53 28 L 35 28 Z" fill="var(--accento-juve)"/>
-                <!-- Striscia Bianca -->
-                <path d="M 15 15 L 28 15 L 28 65 C 28 75 32 80 38 80 L 38 92 C 22 88 15 78 15 65 Z" fill="#ffffff"/>
+                <path d="M 15 15 L 28 15 L 28 65 C 28 75 32 80 38 80 L 38 92 C 22 88 15 78 15 65 Z" fill="var(--bianco-ottico)"/>
             </svg>
-            
-            <div class="testo-header-container">
-                <div class="logo-testo">J-DRAFT <span>MANAGER</span></div>
-                <div class="vecchia-signora-tag">Lo Spirito della Vecchia Signora</div>
+            <h1 class="titolo-gigante">JUVENTUS</h1>
+            <p class="sottotitolo-gigante">IL MANAGERIALE BIANCONERO</p>
+        </div>
+
+        <!-- PARTE DESTRA: LISTA MENÙ STILE VIDEOGIOCO -->
+    <div class="hub-right-side">
+        <div class="hub-list-menu">
+        
+            <!-- CONTENITORE DROPDOWN PER "GIOCA ORA" -->
+            <div class="dropdown-container" id="dropdown-gioca">
+                <!-- Nota: ho aggiunto l'evento onclick per aprire la tendina -->
+                <button class="hub-list-btn main-btn" id="btn-hub-gioca" onclick="toggleTendina()" aria-expanded="false" aria-controls="tendina-modalita">
+                    <span class="btn-icon">⚽</span>
+                    <div class="btn-text">
+                        <h2>GIOCA ORA</h2>
+                        <p>Scendi in campo e fai la storia</p>
+                    </div>
+                </button>
+
+                <!-- SOTTOMENÙ A TENDINA (Nascosto di default) -->
+                <div class="dropdown-menu" id="tendina-modalita">
+                    <button class="dropdown-item" onclick="selezionaModalita('classica')">
+                        <strong>⤷ CAMPIONATO CLASSICO</strong>
+                        <span>Riuscirai a fare 38-0?</span>
+                    </button>
+                    <button class="dropdown-item" onclick="selezionaModalita('roguelike')">
+                        <strong>⤷ SFIDA ROGUELIKE</strong>
+                        <span>Succede di tutto, nel bene e nel male!</span>
+                    </button>
+                    <button class="dropdown-item" onclick="selezionaModalita('mod-fairplay')">
+                        <strong>⤷ FAIR PLAY FINANZIARIO</strong>
+                        <span>Vincerai con budget limitato?</span>
+                    </button>
+                    <button class="dropdown-item" onclick="selezionaModalita('risalita')">
+                        <strong>⤷ LA RISALITA (SERIE B)</strong>
+                        <span>Riporta la Juve in Serie A!</span>
+                    </button>
+                    <button class="dropdown-item" onclick="selezionaModalita('quota-102')">
+                        <strong>⤷ QUOTA 102</strong>
+                        <span>Batti il record di Conte!</span>
+                    </button>
+                    <button class="dropdown-item" onclick="selezionaModalita('champions')">
+                        <strong>⤷ CHAMPIONS LEAGUE</strong>
+                        <span>Torna sul tetto d'Europa!</span>
+                    </button>
+                </div>
+            </div>
+                <!-- CONTENITORE DROPDOWN PER "MULTIGIOCATORE" -->
+                <div class="dropdown-container" id="dropdown-multiplayer">
+                    <button class="hub-list-btn" id="btn-hub-multiplayer" onclick="toggleTendinaMultiplayer()" aria-expanded="false" aria-controls="tendina-multiplayer">
+                        <span class="btn-icon">👥</span>
+                        <div class="btn-text">
+                            <h2>MULTIGIOCATORE</h2>
+                            <p>Sfida altri manager online</p>
+                        </div>
+                    </button>
+
+                    <div class="dropdown-menu" id="tendina-multiplayer">
+                        <button class="dropdown-item" onclick="selezionaMultiplayer('1v1')">
+                            <strong>⤷ 1V1</strong>
+                            <span>Sfida altri allenatori in draft 1v1!</span>
+                        </button>
+                        <button class="dropdown-item" onclick="selezionaMultiplayer('torneo')">
+                            <strong>⤷ TORNEO</strong>
+                            <span>Crea o entra in un torneo con altri giocatori!</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bottone CLASSIFICHE -->
+                <button class="hub-list-btn" id="btn-hub-classifiche">
+                    <span class="btn-icon">🏆</span>
+                    <div class="btn-text">
+                        <h2>CLASSIFICHE</h2>
+                        <p>Classifiche giornaliere e all-time di ogni modalita'</p>
+                    </div>
+                </button>
+
+                <!-- Bottone GUIDA -->
+                <button class="hub-list-btn" id="btn-hub-guida">
+                    <span class="btn-icon">📖</span>
+                    <div class="btn-text">
+                        <h2>COME SI GIOCA</h2>
+                        <p>Le regole per come giocare al meglio</p>
+                    </div>
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div id="modal-come-si-gioca" class="hub-overlay hidden">
+        <div class="hub-modal-content largo">
+            <button class="close-hub-modal" onclick="chiudiModalGuida()">&times;</button>
+            <h3 class="modal-title-juve">GUIDA UFFICIALE DI GIOCO</h3>
+            <div class="corpo-guida-spostato">
+                <div class="griglia-regole">
+                    <div class="carta-regola">
+                        <div class="icona-regola">📋</div>
+                        <h3>1. Scegli il Modulo</h3>
+                        <p>Seleziona lo schema tattico migliore per la tua idea di calcio. Vuoi un 4-3-3 offensivo o un solido 3-5-2?</p>
+                    </div>
+                    <div class="carta-regola">
+                        <div class="icona-regola">🃏</div>
+                        <h3>2. Fai il Draft</h3>
+                        <p>Pesca i giocatori storici della Juventus dal 1976 ad oggi. Assicurati i campioni e attento a schivare i clamorosi flop storici!</p>
+                    </div>
+                    <div class="carta-regola">
+                        <div class="icona-regola">👔</div>
+                        <h3>3. L'Allenatore</h3>
+                        <p>Trapattoni, Lippi, Conte o Allegri? Scegli la guida tecnica che darà l'impronta tattica (e i bonus) alla tua rosa.</p>
+                    </div>
+                    <div class="carta-regola">
+                        <div class="icona-regola">⚽</div>
+                        <h3>4. Simulazione</h3>
+                        <p>Scendi in campo. Simula un'intera stagione e cerca di vincere il campionato con un perfetto 38-0!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Footer con Disclaimer -->
+    <footer class="juve-footer">
+        <p><strong>DISCLAIMER:</strong> Questo progetto è un fan-game amatoriale gratuito e non è in alcun modo affiliato, associato, autorizzato, approvato o sponsorizzato da Juventus Football Club S.p.A. Tutti i nomi, i loghi e i marchi registrati appartengono ai rispettivi proprietari. Creato solo per puro divertimento dai tifosi per i tifosi.</p>
+    </footer>
+</div>
+
+    <div id="schermata-1v1-scelta" class="screen-container schermata-online" style="display: none;">
+        <header class="online-topbar">
+            <button class="btn-online-back" onclick="tornaAlMenuDaOnline()">INDIETRO</button>
+            <div>
+                <h2>1V1</h2>
+                <p>Scegli la modalita' a cui vuoi giocare, se online o contro un tuo amico!</p>
             </div>
         </header>
 
-        <!-- 1. SCHERMATA INIZIALE (HERO) -->
-        <section id="screen-home" class="juve-hero">
-            <div class="hero-overlay-strisce"></div> <!-- Div per l'effetto zebrato -->
-            <div class="hero-contenuto">
-                <h1>CREA LA TUA JUVE <span>STORICA</span></h1>
-                <p>50 anni di leggende bianconere. Un solo mister. Scegli il tuo modulo, fai il draft perfetto e conquista la vetta della Serie A fino all'ultimo respiro.</p>
-                <button class="btn-gioca-oro" onclick="mostraSchermataModalita()">GIOCA ORA</button>
+        <main class="online-layout">
+            <section class="online-choice-grid" id="scelte-1v1">
+                <button class="online-mode-card" data-1v1-action onclick="apriLobbyOnline1v1()">
+                    <span class="online-mode-kicker">MATCHMAKING ONLINE</span>
+                    <h3>1V1 ONLINE</h3>
+                    <p>Crea una lobby online in attesa che un avversario si unisca per la sfida.</p>
+                    <strong>CERCA AVVERSARIO</strong>
+                </button>
+
+                <button class="online-mode-card" data-1v1-action onclick="apriLobbyAmico1v1()">
+                    <span class="online-mode-kicker">LOBBY PRIVATA</span>
+                    <h3>1V1 CON UN AMICO</h3>
+                    <p>Crea una lobby privata e condividi il link con il tuo amico per farlo giocare con te.</p>
+                    <strong>CREA LOBBY</strong>
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <div id="schermata-1v1-online-lobby" class="screen-container schermata-online" style="display: none;">
+        <header class="online-topbar">
+            <button class="btn-online-back" data-1v1-action onclick="tornaAllaScelta1v1()">INDIETRO</button>
+            <div>
+                <h2>1V1 ONLINE</h2>
+                <p>Lobby pubblica per giocare con altri utenti online</p>
             </div>
-        </section>
+        </header>
 
-        <!-- 2. SCHERMATA SELEZIONE MODALITÀ (Inizialmente spenta dalla classe "nascosto") -->
-        <section id="screen-modalita" class="nascosto">
-            <div class="logo-contenitore">
-                <h1 class="logo-testo">SELEZIONA MODALITÀ</h1>
+        <main class="online-layout">
+            <section class="online-lobby-panel" data-lobby-panel="online">
+                <div class="online-lobby-header">
+                    <span class="lobby-tag" data-lobby-field="tipo">MATCHMAKING ONLINE</span>
+                    <h3 data-lobby-field="titolo">Lobby in preparazione</h3>
+                    <p data-lobby-field="stato">Cerco una lobby disponibile...</p>
+                </div>
+
+                <!-- NICKNAME IN LOBBY - VA IMPOSTATO PRIMA DI AVVIARE IL DRAFT -->
+                <div class="lobby-nickname-box">
+                    <label class="lobby-nickname-label">IL TUO NICKNAME <span style="color:#f44336;">*</span></label>
+                    <div class="lobby-nickname-row">
+                        <input type="text" id="input-nickname-lobby-online" class="lobby-nickname-input" maxlength="18" placeholder="Es. Il Mister, JuveKing..." autocomplete="off" oninput="aggiornaNicknameInLobby('online')">
+                    </div>
+                    <p class="nickname-1v1-hint" id="hint-nickname-online">Il nickname e' obbligatorio prima di avviare il draft! Max 18 caratteri.</p>
+                </div>
+
+                <div class="online-players-grid">
+                    <div class="online-player-slot">
+                        <span>MANAGER 1</span>
+                        <strong data-lobby-field="host-name">In attesa</strong>
+                        <small data-lobby-field="host-status">HOST</small>
+                    </div>
+                    <div class="online-player-slot">
+                        <span>MANAGER 2</span>
+                        <strong data-lobby-field="guest-name">In attesa</strong>
+                        <small data-lobby-field="guest-status">SFIDANTE</small>
+                    </div>
+                </div>
+
+                <div class="online-lobby-actions">
+                    <button class="btn-online-primary" data-lobby-field="draft-button" disabled>AVVIA DRAFT 1V1</button>
+                    <button class="btn-online-secondary" data-1v1-action onclick="tornaAllaScelta1v1()">ESCI</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="schermata-1v1-amico-lobby" class="screen-container schermata-online" style="display: none;">
+        <header class="online-topbar">
+            <button class="btn-online-back" data-1v1-action onclick="tornaAllaScelta1v1()">INDIETRO</button>
+            <div>
+                <h2>1V1 CON UN AMICO</h2>
+                <p>Lobby privata con link invito per sfidare i tuoi amici</p>
             </div>
-    
-            <div class="modalita-container">
-                <!-- Card Classica -->
-                <div class="card-modalita" onclick="impostaModalitaEAvvia('classica')">
-                    <div class="modalita-info">
-                        <h3>MODALITÀ CLASSICA</h3>
-                        <p>Campionato tradizionale a 38 giornate. Gestisci la squadra, affronta il mercato di riparazione e punta alla vetta della classifica.</p>
-                    </div>
-                    <button class="btn-scegli-mode">SELEZIONA</button>
+        </header>
+
+        <main class="online-layout">
+            <section class="online-lobby-panel" data-lobby-panel="amico">
+                <div class="online-lobby-header">
+                    <span class="lobby-tag" data-lobby-field="tipo">LOBBY PRIVATA</span>
+                    <h3 data-lobby-field="titolo">Lobby in preparazione</h3>
+                    <p data-lobby-field="stato">Creo il link invito...</p>
                 </div>
 
-                <!-- Card Champions League -->
-                <div class="card-modalita" onclick="impostaModalitaEAvvia('champions')">
-                    <div class="modalita-info">
-                        <h3>CHAMPIONS LEAGUE</h3>
-                        <p>Nuovo formato a 36 squadre! Affronta 8 avversarie nel girone unico: le prime 8 volano agli ottavi, dalla 9ª alla 24ª si giocano i playoff. Dentro o fuori!</p>
+                <!-- NICKNAME IN LOBBY - VA IMPOSTATO PRIMA DI AVVIARE IL DRAFT -->
+                <div class="lobby-nickname-box">
+                    <label class="lobby-nickname-label">IL TUO NICKNAME <span style="color:#f44336;">*</span></label>
+                    <div class="lobby-nickname-row">
+                        <input type="text" id="input-nickname-lobby-amico" class="lobby-nickname-input" maxlength="18" placeholder="Es. Il Mister, JuveKing..." autocomplete="off" oninput="aggiornaNicknameInLobby('amico')">
                     </div>
-                    <button class="btn-scegli-mode">SELEZIONA</button>
+                    <p class="nickname-1v1-hint" id="hint-nickname-amico">Il nickname e' obbligatorio prima di avviare il draft! Max 18 caratteri.</p>
                 </div>
 
-                <div class="card-modalita" onclick="impostaModalitaEAvvia('risalita')">
-                    <div class="modalita-info">
-                        <h3>LA RISALITA</h3>
-                        <p>Stagione 2006/07. Riparti dall'inferno della Serie B con 9 punti di penalizzazione. Schiera i fedelissimi, domina un campionato insidioso e riporta la Vecchia Signora in vetta!</p>
+                <div class="online-players-grid">
+                    <div class="online-player-slot">
+                        <span>MANAGER 1</span>
+                        <strong data-lobby-field="host-name">In attesa</strong>
+                        <small data-lobby-field="host-status">HOST</small>
                     </div>
-                    <button class="btn-scegli-mode">SELEZIONA</button>
+                    <div class="online-player-slot">
+                        <span>MANAGER 2</span>
+                        <strong data-lobby-field="guest-name">In attesa</strong>
+                        <small data-lobby-field="guest-status">SFIDANTE</small>
+                    </div>
                 </div>
 
-                <div class="card-modalita" onclick="impostaModalitaEAvvia('mod-fairplay')">
-                    <div class="modalita-info">
-                        <h3>FAIR PLAY FINANZIARIO</h3>
-                        <p>Costruisci la squadra rispettando il tetto salariale di 930 punti. Attento a non finire i fondi, altrimenti Elkann si arrabbiera' di sicuro!</p>
+                <div class="online-link-box" data-lobby-field="link-box">
+                    <label>LINK INVITO</label>
+                    <div class="online-link-row">
+                        <input type="text" data-lobby-field="link-input" readonly>
+                        <button data-1v1-action onclick="copiaLinkLobby1v1()">COPIA</button>
                     </div>
-                    <button class="btn-scegli-mode">SELEZIONA</button>
                 </div>
 
-                <div class="card-modalita" onclick="impostaModalitaEAvvia('quota-102')">
-                    <div class="modalita-info">
-                        <h3>QUOTA 102</h3>
-                        <p>Riuscirai a battere il record di 102 punti di Antonio Conte? Costruisci la miglior formazione possibile e tenta questa formidabile impresa!</p>
-                    </div>
-                    <button class="btn-scegli-mode">SELEZIONA</button>
+                <div class="online-lobby-actions">
+                    <button class="btn-online-primary" data-lobby-field="draft-button" disabled>AVVIA DRAFT 1V1</button>
+                    <button class="btn-online-secondary" data-1v1-action onclick="tornaAllaScelta1v1()">ESCI</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- SCHERMATA SCELTA TORNEO (Stile 1v1: Crea o Entra) -->
+    <div id="schermata-torneo-scelta" class="screen-container schermata-online" style="display: none;">
+        <header class="online-topbar">
+            <button class="btn-online-back" onclick="tornaAlMenuDaTorneo()">INDIETRO</button>
+            <div>
+                <h2>TORNEO</h2>
+                <p>Scegli la modalita' a cui vuoi giocare: crea il tuo torneo o entra in uno esistente!</p>
+            </div>
+        </header>
+
+        <main class="online-layout">
+            <section class="online-choice-grid" id="scelte-torneo">
+                <button class="online-mode-card" data-torneo-action onclick="apriCreaTorneo()">
+                    <span class="online-mode-kicker">ORGANIZZA COMPETIZIONE</span>
+                    <h3>CREA TORNEO</h3>
+                    <p>Configura e avvia un nuovo torneo personalizzato con le tue regole e invita i tuoi amici.</p>
+                    <strong>CREA STANZA TORNEO</strong>
+                </button>
+
+                <button class="online-mode-card" data-torneo-action onclick="apriEntraTorneo()">
+                    <span class="online-mode-kicker">UNISCITI ALLA SFIDA</span>
+                    <h3>ENTRA CON CODICE</h3>
+                    <p>Inserisci il codice di un torneo esistente per entrare nella stanza e unirti alla competizione.</p>
+                    <strong>INSERISCI CODICE</strong>
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <!-- SCHERMATA SETUP TORNEO (Configurazione) -->
+    <div id="schermata-torneo-setup" class="screen-container schermata-online schermata-torneo" style="display: none;">
+        <header class="online-topbar">
+            <button class="btn-online-back" data-torneo-action onclick="tornaAllaSceltaTorneo()">INDIETRO</button>
+            <div>
+                <h2>CREA TORNEO</h2>
+                <p>Configura le impostazioni del tuo torneo personalizzato</p>
+            </div>
+        </header>
+
+        <main class="torneo-setup-layout">
+            <section class="torneo-setup-panel">
+                <div class="torneo-setup-heading">
+                    <span class="lobby-tag">CREA STANZA</span>
+                    <h3>Formato torneo</h3>
                 </div>
 
-                <!-- Card Roguelike -->
-                <div class="card-modalita" onclick="impostaModalitaEAvvia('roguelike')">
-                    <div class="modalita-info">
-                        <h3>MODALITÀ ROGUELIKE</h3>
-                        <p>Il calcio è imprevedibile! Affronta infortuni, cali di forma, scandali o boost motivazionali generati casualmente turno dopo turno. Riuscirai a gestire l'imprevisto?</p>
+                <div class="torneo-option-group">
+                    <label>Squadre</label>
+                    <div class="torneo-option-row">
+                        <button class="torneo-option-btn" data-torneo-size="4" data-torneo-action onclick="selezionaDimensioneTorneo(4)">4</button>
+                        <button class="torneo-option-btn" data-torneo-size="8" data-torneo-action onclick="selezionaDimensioneTorneo(8)">8</button>
+                        <button class="torneo-option-btn is-selected" data-torneo-size="16" data-torneo-action onclick="selezionaDimensioneTorneo(16)">16</button>
+                        <button class="torneo-option-btn" data-torneo-size="32" data-torneo-action onclick="selezionaDimensioneTorneo(32)">32</button>
                     </div>
-                    <button class="btn-scegli-mode">SELEZIONA</button>
+                </div>
+
+                <div class="torneo-option-group">
+                    <label>Timer</label>
+                    <div class="torneo-option-row">
+                        <button class="torneo-option-btn" data-torneo-time="60" data-torneo-action onclick="selezionaTempoDraftTorneo(60)">60s</button>
+                        <button class="torneo-option-btn is-selected" data-torneo-time="90" data-torneo-action onclick="selezionaTempoDraftTorneo(90)">90s</button>
+                        <button class="torneo-option-btn" data-torneo-time="120" data-torneo-action onclick="selezionaTempoDraftTorneo(120)">120s</button>
+                        <button class="torneo-option-btn" data-torneo-time="180" data-torneo-action onclick="selezionaTempoDraftTorneo(180)">180s</button>
+                    </div>
+                </div>
+
+                <div class="torneo-option-group">
+                    <label>Overall giocatori</label>
+                    <div class="torneo-option-row">
+                        <button class="torneo-option-btn is-selected" data-torneo-overall="true" data-torneo-action onclick="selezionaOverallTorneo(true)">VISIBILI</button>
+                        <button class="torneo-option-btn" data-torneo-overall="false" data-torneo-action onclick="selezionaOverallTorneo(false)">NASCOSTI</button>
+                    </div>
+                </div>
+
+                <div class="torneo-setup-actions">
+                    <button class="btn-online-primary" data-torneo-action onclick="creaLobbyTorneoDaSetup()">CREA LOBBY TORNEO</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- SCHERMATA ENTRA IN TORNEO (Inserisci Codice) -->
+    <div id="schermata-torneo-entra" class="screen-container schermata-online schermata-torneo" style="display: none;">
+        <header class="online-topbar">
+            <button class="btn-online-back" data-torneo-action onclick="tornaAllaSceltaTorneo()">INDIETRO</button>
+            <div>
+                <h2>ENTRA IN TORNEO</h2>
+                <p>Inserisci il codice della stanza per unirti al torneo</p>
+            </div>
+        </header>
+
+        <main class="torneo-setup-layout">
+            <section class="torneo-setup-panel">
+                <div class="torneo-setup-heading">
+                    <span class="lobby-tag">INSERISCI CODICE</span>
+                    <h3>Unisciti alla competizione</h3>
+                </div>
+
+                <div class="torneo-option-group">
+                    <label>Codice Stanza Torneo</label>
+                    <input 
+                        type="text" 
+                        id="input-codice-torneo" 
+                        class="torneo-codice-input" 
+                        placeholder="Inserisci il codice (es: JUV-A3B4)" 
+                        maxlength="20"
+                        autocomplete="off"
+                        style="width: 100%; padding: 14px; font-size: 1.2rem; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; text-align: center; background: #0a0a0a; border: 1px solid rgba(224, 200, 112, 0.3); border-radius: 6px; color: var(--accento-juve);">
+                    <p class="nickname-1v1-hint" style="margin-top: 8px; color: #666; font-size: 0.75rem;">Il nickname si imposta nella stanza torneo</p>
+                </div>
+
+                <div class="torneo-setup-actions">
+                    <button class="btn-online-primary" id="btn-entra-torneo-conferma" data-torneo-action onclick="confermaEntrataInTorneo()" disabled style="opacity: 0.4; cursor: not-allowed;">ENTRA NEL TORNEO</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- SCHERMATA DRAFT TORNEO -->
+    <div id="schermata-torneo-draft" class="screen-container" style="display: none; padding:0;">
+        <header class="headbar-draft">
+            <div class="headbar-left">
+                <span class="badge-modalita">DRAFT TORNEO</span>
+                <div class="divider-vertical"></div>
+                <div class="titolo-sessione">
+                    <h2 id="draft-torneo-titolo-nome">DRAFT IN CORSO</h2>
+                    <p><span class="pulsante-live"></span> <span id="draft-torneo-stato-live">Scegli i tuoi giocatori</span></p>
                 </div>
             </div>
-        </section>
-
-        <!-- Regole del Gioco -->
-        <section class="juve-regole">
-            <h2>COME SI GIOCA?</h2>
-            <div class="griglia-regole">
-                <div class="carta-regola">
-                    <div class="icona-regola">📋</div>
-                    <h3>1. Scegli il Modulo</h3>
-                    <p>Seleziona lo schema tattico migliore per la tua idea di calcio. Vuoi un 4-3-3 offensivo o un solido 3-5-2?</p>
-                </div>
-                <div class="carta-regola">
-                    <div class="icona-regola">🃏</div>
-                    <h3>2. Fai il Draft</h3>
-                    <p>Pesca i giocatori storici della Juventus dal 1976 ad oggi. Assicurati i campioni e attento a schivare i clamorosi flop storici!</p>
-                </div>
-                <div class="carta-regola">
-                    <div class="icona-regola">👔</div>
-                    <h3>3. L'Allenatore</h3>
-                    <p>Trapattoni, Lippi, Conte o Allegri? Scegli la guida tecnica che darà l'impronta tattica (e i bonus) alla tua rosa.</p>
-                </div>
-                <div class="carta-regola">
-                    <div class="icona-regola">⚽</div>
-                    <h3>4. Simula la Stagione</h3>
-                    <p>Scendi in campo. Il motore di gioco calcolerà la forza della tua squadra e la testerà contro le storiche rivali in un'intera stagione.</p>
+            
+            <div class="headbar-right">
+                <div class="contatore-premium">
+                    <span class="label-premium">REROLL RIMASTI</span>
+                    <span class="valore-premium" id="headbar-reroll-torneo-count">3</span>
                 </div>
             </div>
-        </section>
+        </header>
 
-        <!-- Footer con Disclaimer -->
-        <footer class="juve-footer">
-            <p><strong>DISCLAIMER:</strong> Questo progetto è un fan-game amatoriale gratuito e non è in alcun modo affiliato, associato, autorizzato, approvato o sponsorizzato da Juventus Football Club S.p.A. Tutti i nomi, i loghi e i marchi registrati appartengono ai rispettivi proprietari. Creato solo per puro divertimento dai tifosi per i tifosi.</p>
-        </footer>
+        <div class="layout-dashboard-orizzontale">
+            <aside class="colonna-recap animate-left">
+                <div class="recap-card">
+                    <div class="recap-header">TUO DRAFT</div>
+                    <div class="recap-body">
+                        <div class="recap-item">
+                            <span class="label">TUO NICKNAME</span>
+                            <span class="value text-gold" id="recap-torneo-mio-nick">-</span>
+                        </div>
+                        <div class="recap-item">
+                            <span class="label">TUO MODULO</span>
+                            <span class="value text-light" id="recap-torneo-modulo">-</span>
+                        </div>
+                        <div class="recap-item">
+                            <span class="label">GIOCATORI</span>
+                            <span class="value" id="recap-torneo-count">0/11</span>
+                        </div>
+                        <div class="recap-item">
+                            <span class="label">TEMPO DRAFT</span>
+                            <span class="value text-gold" id="headbar-timer-torneo">--:--</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="colonna-campo">
+                <div class="campo-calcio-premium" id="campo-torneo-draft"></div>
+            </main>
+
+            <aside class="colonna-draft">
+                <div class="draft-sidebar-header">
+                    <h3>RUOLO: <span id="draft-torneo-ruolo-corrente" class="text-gold">-</span></h3>
+                    <p id="draft-torneo-stato-box">Clicca un ruolo per iniziare!</p>
+                </div>
+
+                <div id="area-draft-torneo" class="lista-carte-verticale"></div>
+
+                <div class="azioni-footer-draft">
+                    <button class="btn-azione-draft btn-usa-reroll" id="btn-reroll-torneo" onclick="usaRerollTorneo()">USA REROLL (<span id="reroll-torneo-count">3</span>)</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- SCHERMATA SIMULAZIONE TORNEO (STILE REFERENCE IMAGE) -->
+    <div id="schermata-torneo-simulazione" class="screen-container torneo-match-screen" style="display: none; padding: 0; min-height: 100vh; overflow-y: auto;">
+        
+        <div class="torneo-match-shell">
+            
+            <!-- HEADER -->
+            <div class="torneo-match-header">
+                <div>
+                    <p class="torneo-match-kicker"><span id="torneo-sim-nome-utente">LA TUA SQUADRA</span> · TORNEO</p>
+                    <h1>STRADA VERSO LA FINALE</h1>
+                    <p class="torneo-match-subtitle">Segui il tuo percorso, partita dopo partita.</p>
+                </div>
+            </div>
+
+            <!-- LA TUA STRADA VERSO LA FINALE -->
+            <div class="torneo-path-section">
+                <h2>IL TUO PERCORSO</h2>
+                <div id="torneo-percorso-fasi" class="torneo-path-list">
+                    <!-- Fasi generate dinamicamente -->
+                </div>
+            </div>
+
+            <!-- LINK TABELLONE -->
+            <div class="torneo-bracket-link-wrap">
+                <button class="torneo-bracket-link" onclick="toggleTabelloneTorneo()">
+                    VEDI IL TABELLONE COMPLETO
+                </button>
+            </div>
+
+            <!-- RIEPILOGO PARTITA -->
+            <div class="torneo-live-card">
+                <div class="torneo-live-score-row">
+                    <div>
+                        <div style="color: #666; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 5px; font-family: 'Bebas Neue', sans-serif;">
+                            <span id="torneo-sim-fase-label">SEMIFINALE</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <span id="torneo-sim-mio-nome-header" style="color: var(--accento-juve); font-size: 1.2rem; font-family: 'Bebas Neue', sans-serif;">LA TUA SQUADRA</span>
+                            <span style="color: #444;">vs</span>
+                            <span id="torneo-sim-avv-nome-header" style="color: #ccc; font-size: 1.2rem; font-family: 'Bebas Neue', sans-serif;">AVVERSARIO</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div id="torneo-sim-risultato-mio" style="font-size: 2.5rem; font-family: 'Bebas Neue', sans-serif; color: var(--accento-juve); line-height: 1;">0</div>
+                        <div style="font-size: 1.5rem; color: #444;">-</div>
+                        <div id="torneo-sim-risultato-avv" style="font-size: 2.5rem; font-family: 'Bebas Neue', sans-serif; color: #888; line-height: 1;">0</div>
+                    </div>
+                </div>
+                <div class="torneo-live-status">
+                    <div style="width: 6px; height: 6px; background: #4caf50; border-radius: 50%; animation: pulse 1.5s infinite;"></div>
+                    <span id="torneo-sim-cronometro" style="color: #4caf50; font-size: 1rem; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;">0'</span>
+                </div>
+            </div>
+
+            <!-- OVERALL DELLA PROPRIA SQUADRA -->
+            <div class="torneo-opponent-label">
+                <p id="torneo-sim-overall-mia">OVERALL TUA SQUADRA: --</p>
+            </div>
+
+            <!-- EVENTI LIVE -->
+            <div class="torneo-events-section">
+                <h3>CRONACA PARTITA</h3>
+                <div id="torneo-sim-eventi" class="torneo-events-list">
+                    <!-- Eventi generati dinamicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA TABELLONE (OVERLAY FULLSCREEN) -->
+        <div id="vista-tabellone-torneo" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); padding: 40px; overflow-y: auto; z-index: 100;">
+            <div style="max-width: 1400px; margin: 0 auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 style="color: var(--accento-juve); font-size: 2.5rem; margin: 0; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px;">TABELLONE COMPLETO</h2>
+                    <button onclick="toggleTabelloneTorneo()" style="padding: 10px 20px; background: transparent; border: 1px solid var(--accento-juve); color: var(--accento-juve); font-family: 'Bebas Neue', sans-serif; cursor: pointer; border-radius: 4px; letter-spacing: 1px;">
+                        ◂ TORNA ALLA PARTITA
+                    </button>
+                </div>
+                <div id="container-tabellone" style="display: flex; gap: 30px; justify-content: center; align-items: flex-start; overflow-x: auto; padding-bottom: 20px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCHERMATA RISULTATO FINALE TORNEO -->
+    <div id="schermata-torneo-risultato" class="screen-container" style="display: none; overflow-y: auto;">
+        <div class="risultato-1v1-hero" id="risultato-torneo-hero">
+            <div class="risultato-1v1-trophy" id="risultato-torneo-trophy">🏆</div>
+            <h1 class="risultato-1v1-titolo" id="risultato-torneo-titolo">CAMPIONE!</h1>
+            <p class="risultato-1v1-sub" id="risultato-torneo-sub">Hai vinto il torneo!</p>
+        </div>
+
+        <div class="risultato-1v1-grid">
+            <div class="risultato-1v1-card">
+                <h2 style="color: var(--accento-juve); margin-top: 0; border-bottom: 2px solid #222; padding-bottom: 10px;">PODIO FINALE</h2>
+                <div id="torneo-risultato-podio" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;"></div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="risultato-1v1-card">
+                    <h2 style="color: var(--accento-juve); margin-top: 0; border-bottom: 2px solid #222; padding-bottom: 10px;">TUO PERCORSO</h2>
+                    <div id="torneo-risultato-percorso" style="margin-top: 15px;"></div>
+                </div>
+
+                <div class="risultato-1v1-card">
+                    <h2 style="color: var(--accento-juve); margin-top: 0; border-bottom: 2px solid #222; padding-bottom: 10px;">LE TUE STATISTICHE</h2>
+                    <div id="torneo-risultato-stats" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <center style="margin: 40px 0;">
+            <button class="btn-menu-principale-premium" style="max-width: 320px; margin: 0 auto; padding: 18px 30px; font-size: 1.2rem; justify-content: center;" onclick="tornaAlMenuDaTorneo()">🔄 TORNA AL MENU</button>
+        </center>
+    </div>
+
+    <div id="schermata-torneo-lobby" class="screen-container schermata-online schermata-torneo torneo-lobby-screen" style="display: none;">
+        <header class="torneo-lobby-top">
+            <button class="btn-online-back" data-torneo-action onclick="tornaAllaConfigurazioneTorneo()">INDIETRO</button>
+            <div class="torneo-brand-block">
+                <div class="torneo-score-logo">38:0</div>
+                <div>
+                    <strong>JUVE</strong>
+                    <span>A ZERO</span>
+                    <small>TORNEO</small>
+                </div>
+            </div>
+            <button class="torneo-copy-btn" data-torneo-action onclick="copiaLinkLobbyTorneo()">COPIA INVITO</button>
+        </header>
+
+        <main class="torneo-lobby-shell" data-torneo-panel>
+            <section class="torneo-lobby-main">
+                <div class="torneo-lobby-title-row">
+                    <div>
+                        <span class="lobby-tag" data-torneo-field="tag">TORNEO PRIVATO</span>
+                        <h2 data-torneo-field="titolo">MONDIALE A 16 SQUADRE</h2>
+                        <p>
+                            <span data-torneo-field="iscritti">1</span> iscritti -
+                            <span data-torneo-field="posti-liberi">15</span> posti liberi -
+                            soglia <span data-torneo-field="soglia">8</span>
+                        </p>
+                    </div>
+
+                    <div class="torneo-room-code">
+                        <span>CODICE STANZA</span>
+                        <strong data-torneo-field="codice">----</strong>
+                    </div>
+                </div>
+
+                <div class="torneo-lobby-meta">
+                    <span data-torneo-field="tempo">90s per squadra</span>
+                    <span data-torneo-field="overall">Overall visibili</span>
+                    <span data-torneo-field="stato">Lobby in preparazione...</span>
+                </div>
+
+                <div class="torneo-slot-list" id="lista-slot-torneo"></div>
+            </section>
+
+            <section class="torneo-user-dock">
+                <div class="torneo-user-field">
+                    <label for="input-nome-torneo">Nome utente</label>
+                    <input id="input-nome-torneo" type="text" maxlength="18" value="Utente generico">
+                </div>
+
+                <div class="torneo-user-field">
+                    <label for="select-modulo-torneo">Modulo draft</label>
+                    <select id="select-modulo-torneo">
+                        <option value="4-3-3">4-3-3</option>
+                        <option value="4-4-2">4-4-2</option>
+                        <option value="3-5-2">3-5-2</option>
+                        <option value="4-2-3-1">4-2-3-1</option>
+                        <option value="3-4-2-1">3-4-2-1</option>
+                        <option value="4-3-2-1">4-3-2-1</option>
+                    </select>
+                </div>
+
+                <button class="btn-online-secondary" data-torneo-action onclick="salvaProfiloTorneo()">SALVA PROFILO</button>
+                <button class="btn-online-primary" id="btn-avvia-torneo" data-torneo-action onclick="avviaTorneoDaLobby()" disabled>AVVIA TORNEO</button>
+                <button class="btn-online-secondary" data-torneo-action onclick="tornaAlMenuDaTorneo()">ESCI</button>
+            </section>
+        </main>
     </div>
 
     <div id="schermata-modulo" class="screen-container" style="display: none;">
@@ -267,7 +778,7 @@
                     </div>
 
                 <div class="azioni-footer-draft">
-                    <button class="btn-azione-draft btn-usa-reroll">USA REROLL</button>
+                    <button class="btn-azione-draft btn-usa-reroll" id="btn-reroll-offline">USA REROLL</button>
                     <button class="btn-azione-draft btn-completa-stagione" disabled>VIA ALLA STAGIONE (0/11)</button>
                 </div>
             </aside>
@@ -342,8 +853,304 @@
             </div>
         </div>
 
+        <!-- NUOVA SEZIONE CUSTOM PER SALVATAGGIO IN CLASSIFICA -->
+        <div id="sezione-salvataggio" style="display: none; background: #111; border: 1px solid var(--accento-juve); border-radius: 12px; padding: 25px; max-width: 600px; margin: 30px auto; text-align: center;">
+            <h3 style="color: var(--accento-juve); margin-top: 0;">ENTRA NELLA LEGGENDA</h3>
+            <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 15px;">Inserisci il tuo nome da manager per salvare la stagione in classifica.</p>
+    
+            <input type="text" id="nome-manager-input" placeholder="Il tuo nome..." style="padding: 12px; width: 70%; border-radius: 6px; border: 1px solid #333; background: #000; color: #fff; margin-bottom: 15px; font-size: 1rem; text-align: center;">
+    
+            <button class="btn-azione-draft btn-usa-reroll" id="btn-salva-stagione" onclick="salvaStagioneCustom()" style="width: 70%; margin: 0 auto; display: block;">SALVA STAGIONE</button>
+
+            <p id="messaggio-conferma-salvataggio" style="color: #4caf50; display: none; margin-top: 15px; font-weight: bold;">Stagione salvata con successo!</p>
+        </div>
+
         <center style="margin: 40px 0;">
             <button class="btn-menu-principale-premium" style="max-width: 300px; margin: 0 auto; padding: 18px 30px; font-size: 1.2rem; justify-content: center;" onclick="window.location.reload()">🔄 RICOMINCIA DRAFT</button>
+        </center>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- SCHERMATE 1V1: NICKNAME + DRAFT + SIMULAZIONE + RISULTATO  -->
+    <!-- ============================================================ -->
+
+    <!-- SCHERMATA SCELTA MODULO 1V1 -->
+    <div id="schermata-1v1-modulo" class="screen-container" style="display:none;">
+        <header class="top-bar">
+            <button class="btn-back" onclick="tornaAllaLobbyDaModulo1v1()">← INDIETRO</button>
+            <div class="titolo-centrato">
+                <h2>SCEGLI IL TUO MODULO</h2>
+                <p id="label-attesa-modulo-1v1">Scegli lo schema tattico per la tua squadra!</p>
+            </div>
+        </header>
+        
+        <div class="grid-moduli">
+            <div class="card-modulo" onclick="impostaModulo1v1('4-3-3')">
+                <div class="mini-campo">
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div></div>
+                </div>
+                <div class="nome-modulo">4-3-3</div>
+            </div>
+            <div class="card-modulo" onclick="impostaModulo1v1('4-4-2')">
+                <div class="mini-campo">
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div></div>
+                </div>
+                <div class="nome-modulo">4-4-2</div>
+            </div>
+            <div class="card-modulo" onclick="impostaModulo1v1('3-5-2')">
+                <div class="mini-campo">
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div></div>
+                </div>
+                <div class="nome-modulo">3-5-2</div>
+            </div>
+            <div class="card-modulo" onclick="impostaModulo1v1('4-2-3-1')">
+                <div class="mini-campo">
+                    <div class="riga-campo"><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div></div>
+                </div>
+                <div class="nome-modulo">4-2-3-1</div>
+            </div>
+            <div class="card-modulo" onclick="impostaModulo1v1('3-4-2-1')">
+                <div class="mini-campo">
+                    <div class="riga-campo"><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div></div>
+                </div>
+                <div class="nome-modulo">3-4-2-1</div>
+            </div>
+            <div class="card-modulo" onclick="impostaModulo1v1('4-3-2-1')">
+                <div class="mini-campo">
+                    <div class="riga-campo"><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="riga-campo"><div class="dot"></div></div>
+                </div>
+                <div class="nome-modulo">4-3-2-1</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCHERMATA DRAFT 1V1 -->
+    <div id="schermata-1v1-draft" class="screen-container" style="display:none; padding:0;">
+        <header class="headbar-draft">
+            <div class="headbar-left">
+                <span class="badge-modalita">1V1 DRAFT</span>
+                <div class="divider-vertical"></div>
+                <div class="titolo-sessione">
+                    <h2 id="draft-1v1-titolo-nome">TUO DRAFT</h2>
+                    <p><span class="pulsante-live"></span> <span id="draft-1v1-stato-live">DRAFT IN CORSO</span></p>
+                </div>
+            </div>
+            
+            <div class="headbar-right">
+                <div class="contatore-premium">
+                    <span class="label-premium">REROLL RIMASTI</span>
+                    <span class="valore-premium" id="headbar-reroll-1v1-count">3</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="layout-dashboard-orizzontale">
+            <aside class="colonna-recap animate-left">
+                <div class="recap-card">
+                    <div class="recap-header">RECAP SFIDA</div>
+                    <div class="recap-body">
+                        <div class="recap-item">
+                            <span class="label">TUO NICKNAME</span>
+                            <span class="value text-gold" id="recap-1v1-mio-nick">-</span>
+                        </div>
+                        <div class="recap-item">
+                            <span class="label">AVVERSARIO</span>
+                            <span class="value" id="recap-1v1-avv-nick">-</span>
+                        </div>
+                        <div class="recap-item">
+                            <span class="label">TUO MODULO</span>
+                            <span class="value text-light" id="recap-1v1-modulo">-</span>
+                        </div>
+                        <div class="recap-item">
+                            <span class="label">GIOCATORI</span>
+                            <span class="value" id="recap-1v1-count">0/11</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="colonna-campo">
+                <div class="campo-calcio-premium" id="campo-1v1-draft">
+                    <div id="draft-1v1-mio-campo"></div>
+                </div>
+            </main>
+
+            <aside class="colonna-draft">
+                <div class="draft-sidebar-header">
+                    <h3>RUOLO: <span id="draft-1v1-ruolo-corrente" class="text-gold">-</span></h3>
+                    <p id="draft-1v1-stato-box">Clicca un ruolo per iniziare!</p>
+                </div>
+
+                <div id="area-draft-1v1" class="lista-carte-verticale"></div>
+
+                <div class="azioni-footer-draft">
+                    <button class="btn-azione-draft btn-usa-reroll" id="btn-reroll-1v1" onclick="usaReroll1v1()">USA REROLL (<span id="reroll-1v1-count">3</span>)</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- SCHERMATA SCELTA ALLENATORE 1V1 -->
+    <div id="schermata-1v1-allenatore" class="screen-container" style="display:none; padding:0;">
+        <header class="headbar-draft">
+            <div class="headbar-left">
+                <span class="badge-modalita">1V1 ALLENATORE</span>
+                <div class="divider-vertical"></div>
+                <div class="titolo-sessione">
+                    <h2>SCEGLI IL MISTER</h2>
+                    <p><span class="pulsante-live"></span> <span id="all-1v1-stato-live">SCELTA ALLENATORE</span></p>
+                </div>
+            </div>
+        </header>
+
+        <div style="max-width:900px; margin:60px auto; padding:20px;">
+            <div id="draft-1v1-attesa-all-avv" style="display:none; text-align:center; padding:40px;">
+                <div style="font-size:3rem; margin-bottom:15px;">👔</div>
+                <h3 style="color:var(--accento-juve); font-size:2rem; margin:0 0 10px 0;">ALLENATORE SCELTO!</h3>
+                <p style="color:#888; font-size:0.95rem;">Attendi che <strong id="nome-avv-attesa-all">l'avversario</strong> scelga il suo mister...</p>
+                <div class="draft-1v1-spinner" style="margin:20px auto;"></div>
+            </div>
+
+            <div id="draft-1v1-carte-allenatore-panel" style="display:block;">
+                <h3 style="color:var(--accento-juve); text-align:center; margin:0 0 20px 0; font-size:2.2rem;">SCEGLI IL TUO ALLENATORE</h3>
+                <p style="color:#888; text-align:center; margin:0 0 30px 0; font-size:0.9rem;">Scegli il mister che guidera' la tua squadra!</p>
+                <div id="draft-1v1-carte-allenatore" class="lista-carte-verticale" style="max-width:600px; margin:0 auto;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCHERMATA RECAP DRAFT 1V1 (prima della simulazione) -->
+    <div id="schermata-1v1-recap" class="screen-container" style="display:none; overflow-y:auto;">
+        <center>
+            <h1 style="font-size:3.5rem; color:var(--accento-juve); margin:30px 0 10px 0;">RECAP DRAFT 1V1</h1>
+            <p style="color:#aaa; max-width:700px; margin-bottom:40px; font-size:1rem; line-height:1.5;">
+                Ecco le vostre due squadre dopo il draft! Cliccate sul bottone in basso per avviare il campionato!
+            </p>
+        </center>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; max-width:1200px; margin:0 auto 40px;">
+            <!-- SQUADRA MIA -->
+            <div class="card-recap" style="background:#111; border:2px solid var(--accento-juve); border-radius:12px; padding:25px;">
+                <h2 style="color:var(--accento-juve); margin-top:0; text-align:center; border-bottom:2px solid #222; padding-bottom:12px;" id="recap-final-mio-nome">LA TUA SQUADRA</h2>
+                <div style="text-align:center; margin:15px 0;">
+                    <span style="font-size:0.8rem; color:#666; display:block; margin-bottom:5px;">MODULO</span>
+                    <span style="font-size:1.8rem; font-family:'Bebas Neue'; color:#fff;" id="recap-final-mio-modulo">-</span>
+                </div>
+                <div style="text-align:center; margin:15px 0;">
+                    <span style="font-size:0.8rem; color:#666; display:block; margin-bottom:5px;">ALLENATORE</span>
+                    <span style="font-size:1.4rem; font-family:'Bebas Neue'; color:var(--accento-juve);" id="recap-final-mio-all">-</span>
+                </div>
+                <div id="lista-giocatori-miei" style="margin-top:20px; display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+
+            <!-- SQUADRA AVVERSARIO -->
+            <div class="card-recap" style="background:#111; border:1px solid #333; border-radius:12px; padding:25px;">
+                <h2 style="color:#ccc; margin-top:0; text-align:center; border-bottom:2px solid #222; padding-bottom:12px;" id="recap-final-avv-nome">SQUADRA AVVERSARIO</h2>
+                <div style="text-align:center; margin:15px 0;">
+                    <span style="font-size:0.8rem; color:#666; display:block; margin-bottom:5px;">MODULO</span>
+                    <span style="font-size:1.8rem; font-family:'Bebas Neue'; color:#fff;" id="recap-final-avv-modulo">-</span>
+                </div>
+                <div style="text-align:center; margin:15px 0;">
+                    <span style="font-size:0.8rem; color:#666; display:block; margin-bottom:5px;">ALLENATORE</span>
+                    <span style="font-size:1.4rem; font-family:'Bebas Neue'; color:#ccc;" id="recap-final-avv-all">-</span>
+                </div>
+                <div id="lista-giocatori-avv" style="margin-top:20px; display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+        </div>
+
+        <center style="margin:40px 0;">
+            <button class="btn-menu-principale-premium" id="btn-avvia-sim-1v1" style="max-width:400px; padding:20px 40px; font-size:1.4rem; background:var(--accento-juve); color:#000; border:2px solid var(--accento-juve);" onclick="confermaAvvioSimulazione1v1()">
+                <span id="testo-btn-sim-1v1">AVVIA CAMPIONATO</span>
+            </button>
+            <p id="stato-attesa-sim-1v1" style="margin-top:15px; color:#888; font-size:0.9rem;">In attesa che entrambi i manager confermino...</p>
+        </center>
+    </div>
+
+    <!-- Le altre schermate restano invariate -->
+
+    <!-- SCHERMATA SIMULAZIONE 1V1 -->
+    <div id="schermata-1v1-simulazione" class="screen-container" style="display:none;">
+        <header class="header-minimal">
+            <div class="status-run"><span class="dot-live"></span> SFIDA 1V1 IN CORSO</div>
+            <div class="text-gold" style="font-family:'Bebas Neue'; font-size:1.2rem;" id="sim-1v1-info-sfida"></div>
+        </header>
+        <div style="display:grid; grid-template-columns:1fr 350px; gap:30px; margin-top:20px; height:calc(100vh - 120px); padding:0 20px 20px;">
+            <main style="background:rgba(10,10,10,0.9); border:1px solid #222; border-radius:12px; padding:25px; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h2 id="sim-1v1-giornata" style="font-size:2.5rem; margin:0; color:var(--accento-juve);">GIORNATA 1</h2>
+                    <p style="color:#666; margin:5px 0 20px 0;">Campionato 1v1 · 20 Squadre</p>
+                    <div id="sim-1v1-ticker" style="background:#000; border-left:4px solid var(--accento-juve); padding:20px; border-radius:6px; margin-bottom:25px; min-height:100px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; font-weight:600;">
+                        Attesa fischio d'inizio...
+                    </div>
+                </div>
+                <div id="sim-1v1-cronologia" style="flex:1; overflow-y:auto; background:rgba(0,0,0,0.4); padding:15px; border-radius:8px; border:1px solid #1a1a1a; font-size:0.85rem; display:flex; flex-direction:column; gap:6px; margin-bottom:20px;"></div>
+                <div id="sim-1v1-controlli"></div>
+            </main>
+            <aside style="background:#111; border:1px solid #222; border-radius:12px; padding:20px; display:flex; flex-direction:column;">
+                <h3 style="margin:0 0 15px 0; font-size:1.4rem; border-bottom:1px solid #333; padding-bottom:10px;">CLASSIFICA LIVE</h3>
+                <div id="sim-1v1-classifica" style="flex:1; overflow-y:auto; font-size:0.85rem;"></div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- SCHERMATA RISULTATO FINALE 1V1 -->
+    <div id="schermata-1v1-risultato" class="screen-container" style="display:none; overflow-y:auto;">
+        <div class="risultato-1v1-hero" id="risultato-1v1-hero">
+            <div class="risultato-1v1-trophy" id="risultato-1v1-trophy">🏆</div>
+            <h1 class="risultato-1v1-titolo" id="risultato-1v1-titolo">CAMPIONE!</h1>
+            <p class="risultato-1v1-sub" id="risultato-1v1-sub">Hai battuto il tuo avversario!</p>
+        </div>
+        <div class="risultato-1v1-grid">
+            <div class="risultato-1v1-card">
+                <h2 style="color:var(--accento-juve); margin-top:0; border-bottom:2px solid #222; padding-bottom:10px;">CLASSIFICA FINALE</h2>
+                <table style="width:100%; border-collapse:collapse; text-align:left;" id="risultato-1v1-tabella">
+                    <thead>
+                        <tr style="color:#666; border-bottom:1px solid #222; font-size:0.8rem;">
+                            <th style="padding:10px 5px;">POS</th>
+                            <th>SQUADRA</th>
+                            <th>PT</th>
+                            <th>V</th>
+                            <th>P</th>
+                            <th>S</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:20px;">
+                <div class="risultato-1v1-card" id="risultato-1v1-sfida-box">
+                    <h2 style="color:var(--accento-juve); margin-top:0; border-bottom:2px solid #222; padding-bottom:10px;">SCONTRO DIRETTO</h2>
+                    <div id="risultato-1v1-sfida-content"></div>
+                </div>
+                <div class="risultato-1v1-card">
+                    <h2 style="color:var(--accento-juve); margin-top:0; border-bottom:2px solid #222; padding-bottom:10px;">LE TUE STATISTICHE</h2>
+                    <div id="risultato-1v1-stats" style="display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:15px;"></div>
+                </div>
+            </div>
+        </div>
+        <center style="margin:40px 0;">
+            <button class="btn-menu-principale-premium" style="max-width:320px; margin:0 auto; padding:18px 30px; font-size:1.2rem; justify-content:center;" onclick="tornaAlMenuDa1v1()">🔄 TORNA AL MENU</button>
         </center>
     </div>
 
@@ -384,8 +1191,96 @@
         </div>
     </div>
 
+    <div id="modal-classifiche" class="modal-overlay hidden">
+        <div class="modal-content-classifiche">
+            <span class="close-modal" onclick="chiudiClassifiche()">&times;</span>
+        
+            <h2 class="titolo-classifiche">ALBO D'ORO & CLASSIFICHE</h2>
+        
+            <div class="tabs-temporali">
+                <button id="tab-giornaliere" class="tab-btn attivo" onclick="cambiaTipoClassifica('giornaliere')">📅 GIORNALIERA</button>
+                <button id="tab-alltime" class="tab-btn" onclick="cambiaTipoClassifica('allTime')">🏆 TOP ALL-TIME</button>
+            </div>
+
+            <div class="selettore-modalita-classifiche">
+                <button class="btn-mod-tab attivo" data-mod="classica" onclick="cambiaModalitaClassifica('classica')">CLASSICA</button>
+                <button class="btn-mod-tab" data-mod="roguelike" onclick="cambiaModalitaClassifica('roguelike')">ROGUELIKE</button>
+                <button class="btn-mod-tab" data-mod="serieb" onclick="cambiaModalitaClassifica('serieb')">RISALITA</button>
+                <button class="btn-mod-tab" data-mod="fpf" onclick="cambiaModalitaClassifica('fpf')">FAIR PLAY FIN.</button>
+                <button class="btn-mod-tab" data-mod="quota102" onclick="cambiaModalitaClassifica('quota102')">QUOTA 102</button>
+                <button class="btn-mod-tab" data-mod="champions" onclick="cambiaModalitaClassifica('champions')">CHAMPIONS LEAGUE</button>
+            </div>
+
+            <div class="container-tabella-classifica">
+                <table class="tabella-classifica">
+                    <thead>
+                        <tr id="intestazione-tabella-classifica">
+                            </tr>
+                    </thead>
+                    <tbody id="corpo-tabella-classifica">
+                        </tbody>
+                </table>
+            </div>
+
+            <div id="record-personale-utente" class="box-record-personale">
+                </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, doc, setDoc, getDoc, updateDoc, onSnapshot, limit, orderBy, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        // 1. IMPORTA I MODULI AUTH
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        // INSERISCI QUI I DATI DEL TUO PROGETTO FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyC1delBN_zfaLWU10WWMsvT-LDKQoPJIiU",
+            authDomain: "sito-juve-6e870.firebaseapp.com",
+            projectId: "sito-juve-6e870",
+            storageBucket: "sito-juve-6e870.firebasestorage.app",
+            messagingSenderId: "289054455568",
+            appId: "1:289054455568:web:139d78841c4f7bc4bcd795",
+            measurementId: "G-J33S99SMCZ"
+        };
+
+        // Inizializza Firebase
+        const app = initializeApp(firebaseConfig);
+        
+        // Esponiamo db e metodi globalmente così script.js può usarli liberamente
+        window.dbFirestore = getFirestore(app);
+        window.fb = { collection, addDoc, getDocs, query, where, doc, setDoc, getDoc, updateDoc, onSnapshot, limit, orderBy, runTransaction };
+
+        // 2. INIZIALIZZA L'AUTENTICAZIONE ANONIMA
+        const auth = getAuth(app);
+        
+        signInAnonymously(auth).catch((error) => {
+            console.error("Errore Auth Anonima:", error.code, error.message);
+        });
+
+        // 3. SALVA L'ID UTENTE QUANDO IL LOGIN HA SUCCESSO
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Salviamo l'UID globale così script.js sa chi siamo
+                window.utenteUID = user.uid; 
+                console.log("Giocatore autenticato. ID Segreto:", user.uid);
+            }
+        });
+    </script>
+
+    <!-- Tag Audio invisibile per l'inno (loop continuo) -->
+    <audio id="audio-inno-juve" loop preload="auto">
+        <!-- INSERISCI QUI IL NOME DEL TUO FILE AUDIO -->
+        <source src="inno-juventus.mp3" type="audio/mpeg">
+        Il tuo browser non supporta l'elemento audio.
+    </audio>
+
+    <!-- Pulsante flottante per il controllo dell'audio -->
+    <button id="btn-toggle-audio" class="btn-audio-custom">
+        🔇 Inno: OFF
+    </button>
+
     <script src="giocatori.js"></script>
     <script src="script.js"></script>
 </body>
-</html>
 </html>
